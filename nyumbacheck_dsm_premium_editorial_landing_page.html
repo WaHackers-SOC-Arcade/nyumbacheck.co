@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NyumbaCheck DSM — Elite Property Verification</title>
+    
+    <!-- Google Fonts: Playfair Display & DM Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS Engine -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        playfair: ['"Playfair Display"', 'serif'],
+                        dmsans: ['"DM Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        canvas: '#FFFFFF',
+                        offwhite: '#FBFBFA',
+                        charcoal: '#111111',
+                        bodytext: '#555555',
+                        accentgreen: '#7A9A3A',
+                        trustgreen: '#5B8F39',
+                        maroon: '#3E1825',
+                        gold: '#DCA134',
+                        wagreen: '#25D366',
+                        mythicBorder: '#EAEAE8'
+                    },
+                    letterSpacing: {
+                        mythicHead: '-0.04em',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Mythic Design System */
+        .heading-mythic {
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            line-height: 1.02;
+        }
+
+        /* Prevent any layout clashing on scroll-trigger animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Smooth Marquee Animation */
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: flex;
+            width: max-content;
+            animation: marquee 40s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+
+        /* Clean Accordion Max Height Transition */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            opacity: 0;
+        }
+        .accordion-active .accordion-content {
+            max-height: 300px;
+            opacity: 1;
+        }
+
+        /* Luxury Underline Effect */
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 1px;
+            bottom: -4px;
+            left: 0;
+            background-color: #5B8F39;
+            transform-origin: bottom right;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nav-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+    </style>
+</head>
+<body class="bg-canvas text-bodytext font-dmsans antialiased overflow-x-hidden selection:bg-[#5B8F39]/20 selection:text-charcoal">
+
+    <!-- SECTION 1: STICKY NAV -->
+    <header id="sticky-header" class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-mythicBorder transition-all duration-300 py-4">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+            <!-- Brand Logo with Image + Adaptive Fallback -->
+            <a href="#" class="flex items-center gap-2 group">
+                <div class="relative h-14 w-auto flex items-center">
+                    <!-- Tries to load your logo file -->
+                    <img src="logo.jpg" alt="NyumbaCheck Real Estate" class="h-12 w-auto object-contain block" onerror="this.style.display='none'; document.getElementById('nav-logo-fallback').classList.remove('hidden');">
+                    
+                    <!-- Dynamic Fallback if logo.jpg is not in the folder yet -->
+                    <div id="nav-logo-fallback" class="hidden flex items-center gap-2.5">
+                        <div class="w-9 h-9 relative flex items-center justify-center">
+                            <!-- SVG drawing reflecting your actual logo elements (maroon house, tree branches, green check mark) -->
+                            <svg viewBox="0 0 100 100" class="w-full h-full">
+                                <!-- Tree leaves -->
+                                <circle cx="35" cy="30" r="10" fill="#7A9A3A" />
+                                <circle cx="65" cy="20" r="12" fill="#7A9A3A" />
+                                <circle cx="75" cy="35" r="8" fill="#DCA134" />
+                                <!-- House roof (Maroon) -->
+                                <path d="M20 55 L50 30 L80 55" stroke="#3E1825" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                                <!-- House structure -->
+                                <path d="M30 53 L30 75 A 5 5 0 0 0 35 80 L65 80 A 5 5 0 0 0 70 75 L70 53" fill="none" stroke="#3E1825" stroke-width="6" />
+                                <!-- Window (Gold) -->
+                                <rect x="43" y="55" width="14" height="14" rx="2" fill="#DCA134" />
+                                <!-- Checkmark (Trust Green) -->
+                                <path d="M45 75 L55 85 L85 45" stroke="#5B8F39" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                            </svg>
+                        </div>
+                        <span class="text-xl md:text-2xl font-playfair font-black tracking-tight text-charcoal">
+                            nyumba<span class="text-trustgreen">check</span>
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden lg:flex items-center gap-10 text-sm font-semibold tracking-wide text-charcoal">
+                <a href="#why-us" class="nav-link transition-colors duration-200 hover:text-trustgreen">Why Us</a>
+                <a href="#verify" class="nav-link transition-colors duration-200 hover:text-trustgreen">Verify</a>
+                <a href="#process" class="nav-link transition-colors duration-200 hover:text-trustgreen">Process</a>
+                <a href="#faq" class="nav-link transition-colors duration-200 hover:text-trustgreen">FAQ</a>
+            </nav>
+
+            <!-- Desktop Action Buttons -->
+            <div class="hidden lg:flex items-center gap-5">
+                <a href="https://wa.me/255791692360" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-5 py-2.5 text-sm font-bold tracking-wide border border-[#25D366] text-[#25D366] hover:bg-[#25D366]/5 transition-all">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.731-1.456L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.965C16.588 1.977 14.12 .953 11.503.953c-5.438 0-9.861 4.37-9.865 9.801-.001 1.944.512 3.842 1.488 5.531l-.979 3.575 3.673-.951zm12.336-6.19c-.316-.156-1.872-.911-2.162-1.014-.29-.104-.502-.156-.713.156-.21.312-.818 1.014-1.001 1.222-.183.208-.365.234-.681.078-.315-.156-1.33-.483-2.533-1.543-.936-.824-1.568-1.841-1.752-2.153-.183-.312-.02-.481.137-.636.141-.14.316-.364.475-.546.158-.182.211-.312.316-.52.106-.208.053-.39-.026-.546-.079-.156-.713-1.693-.977-2.314-.258-.611-.52-.529-.713-.538-.184-.01-.395-.01-.607-.01s-.554.078-.844.39c-.29.312-1.108 1.066-1.108 2.6s1.135 3.014 1.293 3.222c.158.208 2.233 3.367 5.409 4.706.756.32 1.345.511 1.805.655.76.239 1.451.205 1.999.124.61-.09 1.872-.754 2.136-1.444.264-.689.264-1.275.184-1.393-.079-.12-.29-.197-.606-.353z"/>
+                    </svg>
+                    WhatsApp Support
+                </a>
+                <a href="#verify-form" class="px-6 py-3 text-sm font-bold tracking-wide bg-trustgreen text-white hover:bg-[#49732d] transition-all">
+                    Request Verification
+                </a>
+            </div>
+
+            <!-- Mobile Hamburger Toggle -->
+            <button id="mobile-menu-btn" class="lg:hidden flex items-center p-2 text-charcoal hover:text-trustgreen transition-all" aria-label="Toggle Menu">
+                <svg id="menu-icon-hamburger" class="w-6 h-6 block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Container -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-mythicBorder px-6 py-6 absolute top-full left-0 w-full shadow-lg transition-all">
+            <nav class="flex flex-col gap-5 text-base font-bold text-charcoal">
+                <a href="#why-us" class="hover:text-trustgreen py-1 border-b border-mythicBorder pb-2">Why Us</a>
+                <a href="#verify" class="hover:text-trustgreen py-1 border-b border-mythicBorder pb-2">Verify</a>
+                <a href="#process" class="hover:text-trustgreen py-1 border-b border-mythicBorder pb-2">Process</a>
+                <a href="#faq" class="hover:text-trustgreen py-1 pb-2">FAQ</a>
+            </nav>
+            <div class="mt-6 pt-6 border-t border-mythicBorder flex flex-col gap-3">
+                <a href="https://wa.me/255791692360" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold border border-[#25D366] text-[#25D366] hover:bg-[#25D366]/5 transition-all">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.731-1.456L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.965C16.588 1.977 14.12 .953 11.503.953c-5.438 0-9.861 4.37-9.865 9.801-.001 1.944.512 3.842 1.488 5.531l-.979 3.575 3.673-.951zm12.336-6.19c-.316-.156-1.872-.911-2.162-1.014-.29-.104-.502-.156-.713.156-.21.312-.818 1.014-1.001 1.222-.183.208-.365.234-.681.078-.315-.156-1.33-.483-2.533-1.543-.936-.824-1.568-1.841-1.752-2.153-.183-.312-.02-.481.137-.636.141-.14.316-.364.475-.546.158-.182.211-.312.316-.52.106-.208.053-.39-.026-.546-.079-.156-.713-1.693-.977-2.314-.258-.611-.52-.529-.713-.538-.184-.01-.395-.01-.607-.01s-.554.078-.844.39c-.29.312-1.108 1.066-1.108 2.6s1.135 3.014 1.293 3.222c.158.208 2.233 3.367 5.409 4.706.756.32 1.345.511 1.805.655.76.239 1.451.205 1.999.124.61-.09 1.872-.754 2.136-1.444.264-.689.264-1.275.184-1.393-.079-.12-.29-.197-.606-.353z"/>
+                    </svg>
+                    WhatsApp Support
+                </a>
+                <a href="#verify-form" class="px-5 py-3 text-center text-sm font-bold bg-trustgreen text-white hover:bg-[#49732d] transition-all">
+                    Request Verification
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECTION 2: HERO SECTION -->
+    <section class="bg-canvas pt-12 pb-20 md:pt-24 md:pb-32 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            
+            <!-- Hero Layout Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                
+                <!-- Left Editorial Column -->
+                <div class="lg:col-span-7 flex flex-col items-start">
+                    
+                    <!-- Hero Top Badge -->
+                    <div class="fade-up visible mb-6 inline-flex items-center gap-2 px-4 py-1.5 bg-[#F4F4F2] border border-[#EAEAE8] text-xs text-trustgreen font-semibold tracking-wider uppercase">
+                        <span>✓</span> Tanzania's First Physical Property Verification Platform
+                    </div>
+
+                    <!-- Massive Headline -->
+                    <div class="fade-up visible transition-delay-100">
+                        <h1 class="heading-mythic text-charcoal text-5xl sm:text-7xl lg:text-[88px] tracking-tight mb-8">
+                            Stop Chasing<br>
+                            <span class="text-trustgreen italic font-playfair font-black">Ghost Properties.</span>
+                        </h1>
+                    </div>
+
+                    <!-- Hero Subtext -->
+                    <div class="fade-up visible transition-delay-200 mb-10 max-w-2xl">
+                        <p class="text-lg md:text-xl font-light leading-relaxed text-bodytext">
+                            We physically verify properties and vacant land parcels across <span class="font-bold text-charcoal">Dar es Salaam</span> before connecting serious buyers with genuine owners. No fake listings, no phantom agents, and zero wasted site visits.
+                        </p>
+                    </div>
+
+                    <!-- Hero Action Buttons -->
+                    <div class="fade-up visible transition-delay-300 flex flex-wrap gap-4 w-full sm:w-auto">
+                        <a href="#verify-form" class="w-full sm:w-auto px-8 py-4 bg-trustgreen text-white text-base font-bold tracking-wide hover:bg-[#49732d] transition-all duration-300 text-center">
+                            Verify a Property Now →
+                        </a>
+                        <a href="#process" class="w-full sm:w-auto px-8 py-4 border border-trustgreen text-trustgreen text-base font-bold tracking-wide hover:bg-trustgreen/5 transition-all duration-300 text-center">
+                            How It Works
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right Cinematic Photo Column -->
+                <div class="lg:col-span-5 fade-up visible transition-delay-300 relative">
+                    <div class="border border-mythicBorder p-3 bg-white shadow-xl relative group overflow-hidden">
+                        <div class="relative overflow-hidden aspect-[4/5] bg-neutral-100">
+                            <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80" 
+                                 alt="Verified Luxury Villa Dar es Salaam Masaki" 
+                                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                 onerror="this.src='https://placehold.co/600x750/EAEAE8/111111?text=Dar+Es+Salaam+Verified+Villa'">
+                            <div class="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-transparent to-transparent opacity-60 group-hover:opacity-75 transition-opacity duration-300"></div>
+                            
+                            <div class="absolute bottom-6 left-6 right-6 text-white z-10">
+                                <span class="text-xs uppercase tracking-widest text-gold font-bold block mb-1">Featured Verification Zone</span>
+                                <p class="font-playfair font-bold text-2xl">Masaki Beachside Plot</p>
+                                <div class="mt-2 inline-flex items-center gap-1.5 bg-trustgreen px-3 py-1 text-xs font-semibold uppercase">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span> Ground-Truth Verified
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Divider Line -->
+            <div class="w-full h-[1px] bg-mythicBorder my-16 md:my-24"></div>
+
+            <!-- Hero Stats Row -->
+            <div class="fade-up visible transition-delay-400 grid grid-cols-2 md:grid-cols-4 gap-0 border-t border-l border-mythicBorder">
+                <div class="border-b border-r border-mythicBorder p-6 md:p-8 hover:bg-offwhite transition-colors duration-300">
+                    <h3 class="font-playfair font-black text-4xl lg:text-5xl text-charcoal mb-2">7</h3>
+                    <p class="text-xs uppercase tracking-widest text-accentgreen font-bold">Verification Steps</p>
+                    <p class="text-xs text-bodytext mt-1.5 leading-relaxed">Rigorous multi-stage field checks on coordinates</p>
+                </div>
+                <div class="border-b border-r border-mythicBorder p-6 md:p-8 hover:bg-offwhite transition-colors duration-300">
+                    <h3 class="font-playfair font-black text-4xl lg:text-5xl text-charcoal mb-2">48h</h3>
+                    <p class="text-xs uppercase tracking-widest text-accentgreen font-bold">Average Turnaround</p>
+                    <p class="text-xs text-bodytext mt-1.5 leading-relaxed">Rapid visual validation delivered digitally</p>
+                </div>
+                <div class="border-b border-r border-mythicBorder p-6 md:p-8 hover:bg-offwhite transition-colors duration-300">
+                    <h3 class="font-playfair font-black text-4xl lg:text-5xl text-charcoal mb-2">100%</h3>
+                    <p class="text-xs uppercase tracking-widest text-accentgreen font-bold">Physical Site Visits</p>
+                    <p class="text-xs text-bodytext mt-1.5 leading-relaxed">No guesswork, our team places boots on site</p>
+                </div>
+                <div class="border-b border-r border-mythicBorder p-6 md:p-8 hover:bg-offwhite transition-colors duration-300">
+                    <h3 class="font-playfair font-black text-4xl lg:text-5xl text-charcoal mb-2">0</h3>
+                    <p class="text-xs uppercase tracking-widest text-accentgreen font-bold">Ghost Connections</p>
+                    <p class="text-xs text-bodytext mt-1.5 leading-relaxed">Complete avoidance of phantom agents</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SECTION 3: WHY NYUMBACHECK EXISTS -->
+    <section id="why-us" class="bg-offwhite py-20 md:py-28 border-y border-mythicBorder">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+                
+                <!-- Left Column -->
+                <div class="lg:col-span-5 lg:sticky lg:top-28">
+                    <span class="text-xs font-semibold tracking-widest text-accentgreen uppercase block mb-4">Our Premise</span>
+                    <h2 class="heading-mythic text-4xl sm:text-5xl lg:text-6xl text-charcoal mb-6">
+                        Why NyumbaCheck Exists.
+                    </h2>
+                    <p class="text-lg leading-relaxed text-bodytext mb-8">
+                        The Tanzanian real estate landscape is filled with potential, yet suffers from a lack of reliable data, duplicated land records, and remote transaction risk. We act as your primary objective lens.
+                    </p>
+                    <div class="hidden lg:block border border-mythicBorder p-2 bg-white mt-10">
+                        <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80" 
+                             alt="Inspecting Plot of Land Dar es Salaam" 
+                             class="w-full h-48 object-cover filter grayscale contrast-115"
+                             onerror="this.src='https://placehold.co/400x200/EAEAE8/111111?text=Land+Verification'">
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="lg:col-span-7 flex flex-col">
+                    
+                    <!-- Row 1 -->
+                    <div class="fade-up pb-10 mb-10 border-b border-mythicBorder">
+                        <div class="flex items-start gap-5 mb-4">
+                            <span class="font-playfair font-black text-4xl text-accentgreen">01</span>
+                            <h4 class="font-playfair font-bold text-2xl text-charcoal pt-1">The Trust Layer Deficit</h4>
+                        </div>
+                        <p class="text-base text-bodytext leading-relaxed pl-14">
+                            Many online platforms feature phantom properties, outdated pictures, or completely fabricated layouts. Buyers waste valuable weeks calling multiple local visual brokers only to encounter overlapping boundary claims. NyumbaCheck rebuilds that foundational confidence tier.
+                        </p>
+                    </div>
+
+                    <!-- Row 2 -->
+                    <div class="fade-up pb-10 mb-10 border-b border-mythicBorder">
+                        <div class="flex items-start gap-5 mb-4">
+                            <span class="font-playfair font-black text-4xl text-accentgreen">02</span>
+                            <h4 class="font-playfair font-bold text-2xl text-charcoal pt-1">The Diaspora Risk Shield</h4>
+                        </div>
+                        <p class="text-base text-bodytext leading-relaxed pl-14">
+                            Sending funds to relatives or unvetted middlemen in Dar es Salaam often leads to heavy financial losses. We act as your independent third-party agent, verifying coordinates anonymously and providing direct photographic files so you see exactly what exists.
+                        </p>
+                    </div>
+
+                    <!-- Row 3 -->
+                    <div class="fade-up pb-10">
+                        <div class="flex items-start gap-5 mb-4">
+                            <span class="font-playfair font-black text-4xl text-accentgreen">03</span>
+                            <h4 class="font-playfair font-bold text-2xl text-charcoal pt-1">Confidence-First Decisions</h4>
+                        </div>
+                        <p class="text-base text-bodytext leading-relaxed pl-14">
+                            Never commit capital on hearsay. By checking the physical reality of structural works, locating coordinates on spatial maps, and talking directly with neighbors, you enter legal deed negotiations with complete factual leverage.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: MARQUEE STRIP -->
+    <section class="bg-white border-b border-mythicBorder overflow-hidden py-5 select-none">
+        <div class="w-full">
+            <div class="animate-marquee whitespace-nowrap flex items-center gap-12 text-xs font-semibold text-maroon tracking-widest uppercase">
+                <!-- String Group 1 -->
+                <span>Verify First. Buy Confidently.</span>
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-gold"></span>
+                <span>No Ghost Properties.</span>
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-gold"></span>
+                <span>Tanzania's Trust Layer.</span>
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-gold"></span>
+                <span>Ground Truth, Not Guesswork.</span>
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-gold"></span>
+                <span>Diaspora-Ready Verification.</span>
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-gold"></span>
+                <span>Physical Checks Only.</span>
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-gold"></span>
+
+                <!-- String Group 2 -->
+                <span>Verify First. Buy Confidently.</span>
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-gold"></span>
+                <span>No Ghost Properties.</span>
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-gold"></span>
+                <span>Tanzania's Trust Layer.</span>
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-gold"></span>
+                <span>Ground Truth, Not Guesswork.</span>
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-gold"></span>
+                <span>Diaspora-Ready Verification.</span>
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-gold"></span>
+                <span>Physical Checks Only.</span>
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-gold"></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: VERIFICATION ENGINE (BENTO GRID) -->
+    <section id="verify" class="bg-white py-20 md:py-28">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            
+            <!-- Engine Header -->
+            <div class="mb-16 md:mb-24 text-center max-w-2xl mx-auto">
+                <span class="text-xs font-bold tracking-widest text-accentgreen uppercase block mb-4">Verification Engine</span>
+                <h2 class="heading-mythic text-4xl sm:text-5xl lg:text-6xl text-charcoal mb-6">
+                    7-Point Physical Check.
+                </h2>
+                <p class="text-base text-bodytext">
+                    Our team executes a strict, documented workflow on the ground to provide a definitive record of the property's state.
+                </p>
+            </div>
+
+            <!-- Bento Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 border-t border-l border-mythicBorder">
+                
+                <!-- Card 1 -->
+                <div class="fade-up border-b border-r border-mythicBorder p-8 hover:bg-offwhite transition-all duration-300 flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-8">
+                            <span class="w-12 h-12 flex items-center justify-center bg-trustgreen/5 text-trustgreen group-hover:bg-trustgreen/15 transition-colors">
+                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18M18.75 3v18M9 9h1.5M9 13h1.5M9 17h1.5M13.5 9h1.5M13.5 13h1.5M13.5 17h1.5" />
+                                </svg>
+                            </span>
+                            <span class="font-playfair font-black text-xl text-accentgreen">01</span>
+                        </div>
+                        <h3 class="font-playfair font-bold text-xl text-charcoal mb-3">Physical Site Visits</h3>
+                        <p class="text-sm text-bodytext leading-relaxed">
+                            Our inspection crew physically travels to the plot coordinates to confirm the exact state of development and terrain.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="fade-up border-b border-r border-mythicBorder p-8 hover:bg-offwhite transition-all duration-300 flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-8">
+                            <span class="w-12 h-12 flex items-center justify-center bg-trustgreen/5 text-trustgreen group-hover:bg-trustgreen/15 transition-colors">
+                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25s-7.5-4.108-7.5-11.25a7.5 7.5 0 1115 0z" />
+                                </svg>
+                            </span>
+                            <span class="font-playfair font-black text-xl text-accentgreen">02</span>
+                        </div>
+                        <h3 class="font-playfair font-bold text-xl text-charcoal mb-3">GPS Confirmation</h3>
+                        <p class="text-sm text-bodytext leading-relaxed">
+                            We record verified real-time coordinate logs on-site, allowing you to trace physical boundaries on high-definition spatial maps.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 3: IMAGE CARD -->
+                <div class="fade-up border-b border-r border-mythicBorder p-2 bg-offwhite transition-all duration-300 relative group overflow-hidden min-h-[280px]">
+                    <img src="https://images.unsplash.com/photo-1581094288338-2314dddb7ecc?auto=format&fit=crop&w=600&q=80" 
+                         alt="On Site Physical Verification Tech" 
+                         class="w-full h-full object-cover filter grayscale contrast-110 group-hover:scale-105 transition-transform duration-700"
+                         onerror="this.src='https://placehold.co/400x300/EAEAE8/111111?text=Inspection+Media'">
+                    <div class="absolute inset-0 bg-charcoal/70 p-6 flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs uppercase tracking-widest text-gold font-bold">Verification Visuals</span>
+                            <span class="font-playfair font-black text-xl text-gold">03</span>
+                        </div>
+                        <div>
+                            <h3 class="font-playfair font-bold text-xl text-white mb-2">Media Documentation</h3>
+                            <p class="text-xs text-[#CCCCCC] leading-relaxed">
+                                We capture fresh photographs and wide-angle panning videos to prove structural integrity at that exact hour.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="fade-up border-b border-r border-mythicBorder p-8 hover:bg-offwhite transition-all duration-300 flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-8">
+                            <span class="w-12 h-12 flex items-center justify-center bg-trustgreen/5 text-trustgreen group-hover:bg-trustgreen/15 transition-colors">
+                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5a2.25 2.25 0 002.25 2.25zm.001-12v9a1.5 1.5 0 001.5 1.5h1.5a1.5 1.5 0 001.5-1.5v-9a1.5 1.5 0 00-1.5-1.5h-1.5a1.5 1.5 0 00-1.5 1.5z" />
+                                </svg>
+                            </span>
+                            <span class="font-playfair font-black text-xl text-accentgreen">04</span>
+                        </div>
+                        <h3 class="font-playfair font-bold text-xl text-charcoal mb-3">Seller Identity Checks</h3>
+                        <p class="text-sm text-bodytext leading-relaxed">
+                            We cross-reference government IDs and local registration slips to match ownership representations with true physical records.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="fade-up border-b border-r border-mythicBorder p-8 hover:bg-offwhite transition-all duration-300 flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-8">
+                            <span class="w-12 h-12 flex items-center justify-center bg-trustgreen/5 text-trustgreen group-hover:bg-trustgreen/15 transition-colors">
+                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A12.481 12.481 0 014.69 19.4a2 2 0 01-1.402-1.683c-.027-.219-.04-.442-.04-.668 0-.003 0-.007-.001-.01a3 3 0 014.682-2.72m11 0c.216.021.432.057.644.107m-9.717-1.41A9 9 0 1121.75 12h-1.5" />
+                                </svg>
+                            </span>
+                            <span class="font-playfair font-black text-xl text-accentgreen">05</span>
+                        </div>
+                        <h3 class="font-playfair font-bold text-xl text-charcoal mb-3">Neighbor Interviews</h3>
+                        <p class="text-sm text-bodytext leading-relaxed">
+                            We discreetly consult with long-term residents and local community elders. Real history is the best early warning system for legacy boundary disputes.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 6: IMAGE CARD -->
+                <div class="fade-up border-b border-r border-mythicBorder p-2 bg-offwhite transition-all duration-300 relative group overflow-hidden min-h-[280px]">
+                    <img src="https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=600&q=80" 
+                         alt="Securing Legal Connections Handshake" 
+                         class="w-full h-full object-cover filter grayscale contrast-110 group-hover:scale-105 transition-transform duration-700"
+                         onerror="this.src='https://placehold.co/400x300/EAEAE8/111111?text=Secure+Connection'">
+                    <div class="absolute inset-0 bg-charcoal/70 p-6 flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs uppercase tracking-widest text-gold font-bold">Secure Routing</span>
+                            <span class="font-playfair font-black text-xl text-gold">06</span>
+                        </div>
+                        <div>
+                            <h3 class="font-playfair font-bold text-xl text-white mb-2">Buyer-Seller Coordination</h3>
+                            <p class="text-xs text-[#CCCCCC] leading-relaxed">
+                                We direct secure introductions, removing predatory visual brokers to establish clean lines of communication.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 7 -->
+                <div class="fade-up border-b border-r border-mythicBorder p-8 hover:bg-offwhite transition-all duration-300 md:col-span-2 lg:col-span-3 flex flex-col md:flex-row md:items-center justify-between gap-6 group">
+                    <div class="max-w-3xl">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="w-12 h-12 flex items-center justify-center bg-trustgreen/5 text-trustgreen group-hover:bg-trustgreen/15 transition-colors">
+                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v13.5m0 0L7.5 12m4.5 4.5L16.5 12M3 21h18" />
+                                </svg>
+                            </span>
+                            <span class="font-playfair font-black text-xl text-accentgreen">07</span>
+                        </div>
+                        <h3 class="font-playfair font-bold text-2xl text-charcoal mb-2">Trusted Lawyer Referrals</h3>
+                        <p class="text-sm text-bodytext leading-relaxed">
+                            Following successful physical clearance, we connect you with vetted real estate attorneys in Dar es Salaam to supervise title deed validation and final contract registration.
+                        </p>
+                    </div>
+                    <div class="shrink-0">
+                        <a href="#verify-form" class="inline-flex items-center gap-2 px-6 py-3 border border-charcoal text-charcoal text-sm font-bold tracking-wide hover:bg-charcoal hover:text-white transition-all">
+                            Submit Request
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: HOW IT WORKS -->
+    <section id="process" class="bg-offwhite py-20 md:py-28 border-y border-mythicBorder">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            
+            <!-- Section Title -->
+            <div class="mb-20 text-center md:text-left">
+                <span class="text-xs font-bold tracking-widest text-accentgreen uppercase block mb-4">The Workflow</span>
+                <h2 class="heading-mythic text-4xl sm:text-5xl lg:text-6xl text-charcoal">
+                    Three Steps. Zero Guesswork.
+                </h2>
+            </div>
+
+            <!-- Steps Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-l border-mythicBorder bg-white">
+                
+                <!-- Step 1 -->
+                <div class="fade-up p-8 md:p-10 border-b border-r border-mythicBorder flex flex-col justify-between min-h-[340px] hover:bg-offwhite transition-colors duration-300">
+                    <div class="flex items-center justify-between mb-8">
+                        <span class="font-playfair font-black text-5xl text-trustgreen/20">01</span>
+                        <span class="text-xs font-bold uppercase tracking-widest text-accentgreen">Initiation</span>
+                    </div>
+                    <div>
+                        <h4 class="font-playfair font-bold text-2xl text-charcoal mb-3">Request</h4>
+                        <p class="text-sm text-bodytext leading-relaxed">
+                            Provide the details of your desired property or vacant plot listing in Dar es Salaam. Share location cues, land coordinates, or agent contacts.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="fade-up p-8 md:p-10 border-b border-r border-mythicBorder flex flex-col justify-between min-h-[340px] hover:bg-offwhite transition-colors duration-300">
+                    <div class="flex items-center justify-between mb-8">
+                        <span class="font-playfair font-black text-5xl text-trustgreen/20">02</span>
+                        <span class="text-xs font-bold uppercase tracking-widest text-accentgreen">Analysis</span>
+                    </div>
+                    <div>
+                        <h4 class="font-playfair font-bold text-2xl text-charcoal mb-3">Verify</h4>
+                        <p class="text-sm text-bodytext leading-relaxed">
+                            Our field verification team visits the precise coordinates. We record video documentation, log GPS tracking parameters, verify IDs, and complete neighbor checks.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="fade-up p-8 md:p-10 border-b border-r border-mythicBorder flex flex-col justify-between min-h-[340px] hover:bg-offwhite transition-colors duration-300">
+                    <div class="flex items-center justify-between mb-8">
+                        <span class="font-playfair font-black text-5xl text-trustgreen/20">03</span>
+                        <span class="text-xs font-bold uppercase tracking-widest text-accentgreen">Closing</span>
+                    </div>
+                    <div>
+                        <h4 class="font-playfair font-bold text-2xl text-charcoal mb-3">Connect</h4>
+                        <p class="text-sm text-bodytext leading-relaxed">
+                            Receive your comprehensive verification packet. If positive, we connect you with the genuine owner and vetted local lawyers to register the deed.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Legal Disclaimer Card -->
+            <div class="fade-up mt-16 p-8 bg-white border border-mythicBorder flex flex-col sm:flex-row items-start gap-6 shadow-sm">
+                <span class="p-3 bg-gold/10 text-gold shrink-0">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </span>
+                <div>
+                    <h5 class="font-bold text-charcoal text-base mb-1">Operational Boundary Notice</h5>
+                    <p class="text-sm text-bodytext leading-relaxed">
+                        NyumbaCheck DSM operates strictly as an independent ground physical verification and directory coordination platform. We verify real property existence, boundary states, coordinates, and visible developments. Validating deed authenticity and title registration is the direct responsibility of licensed lawyers.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SECTION 7: COVERAGE MATRIX -->
+    <section class="bg-white py-20 md:py-28">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+                
+                <!-- Left Column: Regions -->
+                <div class="fade-up">
+                    <span class="text-xs font-bold tracking-widest text-accentgreen uppercase block mb-4">Area Coverage</span>
+                    <h3 class="font-playfair font-bold text-3xl md:text-4xl text-charcoal mb-6">Focus Regions</h3>
+                    <p class="text-base text-bodytext mb-8">
+                        Our ground specialists inspect physical assets throughout the fastest growing, most high-value coastal and commercial zones in Dar es Salaam:
+                    </p>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-[#F4F4F2] text-sm text-charcoal font-medium border border-mythicBorder hover:border-trustgreen hover:bg-white transition-all duration-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gold"></span> Masaki
+                        </span>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-[#F4F4F2] text-sm text-charcoal font-medium border border-mythicBorder hover:border-trustgreen hover:bg-white transition-all duration-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gold"></span> Oyster Bay
+                        </span>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-[#F4F4F2] text-sm text-charcoal font-medium border border-mythicBorder hover:border-trustgreen hover:bg-white transition-all duration-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gold"></span> Msasani
+                        </span>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-[#F4F4F2] text-sm text-charcoal font-medium border border-mythicBorder hover:border-trustgreen hover:bg-white transition-all duration-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gold"></span> Kigamboni
+                        </span>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-[#F4F4F2] text-sm text-charcoal font-medium border border-mythicBorder hover:border-trustgreen hover:bg-white transition-all duration-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gold"></span> Mikocheni
+                        </span>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-[#F4F4F2] text-sm text-charcoal font-medium border border-mythicBorder hover:border-trustgreen hover:bg-white transition-all duration-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gold"></span> Kinondoni
+                        </span>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-[#F4F4F2] text-sm text-charcoal font-medium border border-mythicBorder hover:border-trustgreen hover:bg-white transition-all duration-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gold"></span> Mbezi Beach
+                        </span>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-[#F4F4F2] text-sm text-charcoal font-medium border border-mythicBorder hover:border-trustgreen hover:bg-white transition-all duration-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gold"></span> Greater Dar es Salaam
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Right Column: Networks -->
+                <div class="fade-up">
+                    <span class="text-xs font-bold tracking-widest text-accentgreen uppercase block mb-4">Ecosystem</span>
+                    <h3 class="font-playfair font-bold text-3xl md:text-4xl text-charcoal mb-6">Who We Serve</h3>
+                    <p class="text-base text-bodytext mb-8">
+                        We build robust trust infrastructure designed for serious real estate transactors around the globe:
+                    </p>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-[#F4F4F2] text-sm text-charcoal font-medium border border-mythicBorder hover:border-trustgreen hover:bg-white transition-all duration-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gold"></span> Local Buyers
+                        </span>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-[#F4F4F2] text-sm text-charcoal font-medium border border-mythicBorder hover:border-trustgreen hover:bg-white transition-all duration-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gold"></span> Diaspora Tanzanians
+                        </span>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-[#F4F4F2] text-sm text-charcoal font-medium border border-mythicBorder hover:border-trustgreen hover:bg-white transition-all duration-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gold"></span> Property Investors
+                        </span>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-[#F4F4F2] text-sm text-charcoal font-medium border border-mythicBorder hover:border-trustgreen hover:bg-white transition-all duration-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gold"></span> Real Estate Developers
+                        </span>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-[#F4F4F2] text-sm text-charcoal font-medium border border-mythicBorder hover:border-trustgreen hover:bg-white transition-all duration-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gold"></span> Vetted Land Owners
+                        </span>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-[#F4F4F2] text-sm text-charcoal font-medium border border-mythicBorder hover:border-trustgreen hover:bg-white transition-all duration-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gold"></span> Global Consulates & Corporates
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 8: DARK CTA SECTION -->
+    <section id="verify-form" class="bg-charcoal py-20 md:py-28 text-white relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <!-- CTA Left Column -->
+                <div class="lg:col-span-6 fade-up">
+                    <span class="text-xs font-bold tracking-widest text-trustgreen uppercase block mb-4">Start Verification</span>
+                    <h2 class="font-playfair font-black text-4xl sm:text-6xl text-white leading-tight mb-6">
+                        Secure Your Next Tanzanian <span class="text-trustgreen italic block sm:inline">Property Investment.</span>
+                    </h2>
+                    <p class="text-lg text-neutral-400 mb-10 leading-relaxed">
+                        Do not rely on distant promises or unvetted media. Gain undisputed physical confirmation before wiring transactional capital.
+                    </p>
+                    
+                    <!-- Direct Contact Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 mb-8">
+                        <a href="https://wa.me/255791692360" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-3 px-6 py-4 bg-[#25D366] text-white font-bold hover:bg-[#1ebd54] transition-all">
+                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.731-1.456L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.965C16.588 1.977 14.12 .953 11.503.953c-5.438 0-9.861 4.37-9.865 9.801-.001 1.944.512 3.842 1.488 5.531l-.979 3.575 3.673-.951zm12.336-6.19c-.316-.156-1.872-.911-2.162-1.014-.29-.104-.502-.156-.713.156-.21.312-.818 1.014-1.001 1.222-.183.208-.365.234-.681.078-.315-.156-1.33-.483-2.533-1.543-.936-.824-1.568-1.841-1.752-2.153-.183-.312-.02-.481.137-.636.141-.14.316-.364.475-.546.158-.182.211-.312.316-.52.106-.208.053-.39-.026-.546-.079-.156-.713-1.693-.977-2.314-.258-.611-.52-.529-.713-.538-.184-.01-.395-.01-.607-.01s-.554.078-.844.39c-.29.312-1.108 1.066-1.108 2.6s1.135 3.014 1.293 3.222c.158.208 2.233 3.367 5.409 4.706.756.32 1.345.511 1.805.655.76.239 1.451.205 1.999.124.61-.09 1.872-.754 2.136-1.444.264-.689.264-1.275.184-1.393-.079-.12-.29-.197-.606-.353z"/>
+                            </svg>
+                            Connect on WhatsApp
+                        </a>
+                        <a href="mailto:nyumbacheck@gmail.com" class="inline-flex items-center justify-center gap-3 px-6 py-4 border border-neutral-700 hover:border-white transition-all text-white font-bold">
+                            Email Support
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Form Card -->
+                <div class="lg:col-span-6 fade-up">
+                    <form id="verification-form-element" class="bg-[#1C1C1B] border border-neutral-800 p-8 md:p-10 shadow-2xl">
+                        <h4 class="font-playfair font-bold text-2xl text-white mb-6">Submit Verification Request</h4>
+                        
+                        <!-- Success Alerts -->
+                        <div id="form-success-alert" class="hidden mb-6 p-4 bg-trustgreen/20 border border-trustgreen text-white text-sm">
+                            <span class="font-bold">✓ Request Recorded.</span> Our field team will reach out via Email or WhatsApp within 12 hours.
+                        </div>
+
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-neutral-400 mb-2">Your Full Name</label>
+                                <input type="text" required class="w-full bg-neutral-900 border border-neutral-800 px-4 py-3.5 text-white text-sm focus:outline-none focus:border-trustgreen transition-colors" placeholder="e.g. Kelvin Mwanjali">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-neutral-400 mb-2">WhatsApp Number or Email Address</label>
+                                <input id="contact-input" type="text" required class="w-full bg-neutral-900 border border-neutral-800 px-4 py-3.5 text-white text-sm focus:outline-none focus:border-trustgreen transition-colors" placeholder="e.g. +255... or email@domain.com">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-neutral-400 mb-2">Target Property Location / Plot Coordinates</label>
+                                <input type="text" required class="w-full bg-neutral-900 border border-neutral-800 px-4 py-3.5 text-white text-sm focus:outline-none focus:border-trustgreen transition-colors" placeholder="e.g. Kigamboni plot near beach or Masaki plot">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-neutral-400 mb-2">Specific Verification Objectives</label>
+                                <textarea rows="3" class="w-full bg-neutral-900 border border-neutral-800 px-4 py-3.5 text-white text-sm focus:outline-none focus:border-trustgreen transition-colors" placeholder="Mention plot number, local broker names, or main security concerns..."></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-trustgreen text-white py-4 font-bold uppercase tracking-wider hover:bg-[#49732d] transition-colors">
+                                Request Field Check →
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SECTION 9: FAQ ACCORDION -->
+    <section id="faq" class="bg-white py-20 md:py-28">
+        <div class="max-w-3xl mx-auto px-6">
+            
+            <!-- Section Title -->
+            <div class="mb-16 text-center">
+                <span class="text-xs font-bold tracking-widest text-accentgreen uppercase block mb-4">Common Questions</span>
+                <h2 class="heading-mythic text-4xl sm:text-5xl lg:text-6xl text-charcoal">
+                    Frequently Asked.
+                </h2>
+            </div>
+
+            <!-- Accordion Wrapper -->
+            <div class="space-y-4">
+                
+                <!-- FAQ Item 1 -->
+                <div class="border border-mythicBorder hover:border-trustgreen transition-all duration-300 bg-white">
+                    <button class="accordion-toggle w-full flex items-center justify-between p-6 text-left group">
+                        <span class="font-playfair font-bold text-lg md:text-xl text-charcoal group-hover:text-trustgreen transition-colors">
+                            What is your physical turnaround time?
+                        </span>
+                        <span class="accordion-icon text-2xl text-charcoal transition-transform duration-300 transform shrink-0 ml-4">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="px-6 pb-6 text-sm md:text-base text-bodytext leading-relaxed border-t border-mythicBorder/50 pt-4 mt-1">
+                            Once your request is registered and coordinates validated, our ground officers complete the field inspection and compile the media package within an average of 48 hours across Greater Dar es Salaam.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="border border-mythicBorder hover:border-trustgreen transition-all duration-300 bg-white">
+                    <button class="accordion-toggle w-full flex items-center justify-between p-6 text-left group">
+                        <span class="font-playfair font-bold text-lg md:text-xl text-charcoal group-hover:text-trustgreen transition-colors">
+                            How does this process work for the Diaspora?
+                        </span>
+                        <span class="accordion-icon text-2xl text-charcoal transition-transform duration-300 transform shrink-0 ml-4">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="px-6 pb-6 text-sm md:text-base text-bodytext leading-relaxed border-t border-mythicBorder/50 pt-4 mt-1">
+                            We act as your objective local eye. Simply submit property coordinates, online listings, or broker contacts. Our officers visit anonymously, verify true physical boundaries, record photos, speak with neighbors, and email you the complete factual packet.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="border border-mythicBorder hover:border-trustgreen transition-all duration-300 bg-white">
+                    <button class="accordion-toggle w-full flex items-center justify-between p-6 text-left group">
+                        <span class="font-playfair font-bold text-lg md:text-xl text-charcoal group-hover:text-trustgreen transition-colors">
+                            Do you verify land registry documents?
+                        </span>
+                        <span class="accordion-icon text-2xl text-charcoal transition-transform duration-300 transform shrink-0 ml-4">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="px-6 pb-6 text-sm md:text-base text-bodytext leading-relaxed border-t border-mythicBorder/50 pt-4 mt-1">
+                            NyumbaCheck focuses specifically on "Physical & Ground-Truth Verification" (proving physical existence, coordinates, neighborhood claims). For legal deed search and registration, we refer you directly to vetted local real estate lawyers.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="border border-mythicBorder hover:border-trustgreen transition-all duration-300 bg-white">
+                    <button class="accordion-toggle w-full flex items-center justify-between p-6 text-left group">
+                        <span class="font-playfair font-bold text-lg md:text-xl text-charcoal group-hover:text-trustgreen transition-colors">
+                            Do you coordinate transaction legalities?
+                        </span>
+                        <span class="accordion-icon text-2xl text-charcoal transition-transform duration-300 transform shrink-0 ml-4">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="px-6 pb-6 text-sm md:text-base text-bodytext leading-relaxed border-t border-mythicBorder/50 pt-4 mt-1">
+                            We do not take commissions or act as transactional visual brokers. We operate strictly as an objective inspection layer. After physical clearance, you are connected directly with reputable legal experts to finish purchase processes.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 5 -->
+                <div class="border border-mythicBorder hover:border-trustgreen transition-all duration-300 bg-white">
+                    <button class="accordion-toggle w-full flex items-center justify-between p-6 text-left group">
+                        <span class="font-playfair font-bold text-lg md:text-xl text-charcoal group-hover:text-trustgreen transition-colors">
+                            What if a property fails physical verification?
+                        </span>
+                        <span class="accordion-icon text-2xl text-charcoal transition-transform duration-300 transform shrink-0 ml-4">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="px-6 pb-6 text-sm md:text-base text-bodytext leading-relaxed border-t border-mythicBorder/50 pt-4 mt-1">
+                            If the plot is vacant, contains overlapping development, shows clear active ownership disputes, or lacks legal identity matches, we will issue a FAILED report with visual evidence, saving you millions in high-risk investment capital.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 6 -->
+                <div class="border border-mythicBorder hover:border-trustgreen transition-all duration-300 bg-white">
+                    <button class="accordion-toggle w-full flex items-center justify-between p-6 text-left group">
+                        <span class="font-playfair font-bold text-lg md:text-xl text-charcoal group-hover:text-trustgreen transition-colors">
+                            How much does a physical inspection check cost?
+                        </span>
+                        <span class="accordion-icon text-2xl text-charcoal transition-transform duration-300 transform shrink-0 ml-4">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="px-6 pb-6 text-sm md:text-base text-bodytext leading-relaxed border-t border-mythicBorder/50 pt-4 mt-1">
+                            We quote customized flat rates based on the target zone's distance and terrain inside Greater Dar es Salaam. Reach out to our operators via WhatsApp for a precise and immediate quote.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SECTION 10: FOOTER -->
+    <footer class="bg-offwhite border-t border-mythicBorder pt-20 pb-8 text-charcoal">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 pb-16 border-b border-mythicBorder">
+                
+                <!-- Col 1: Brand & Badge with Image + Adaptive Fallback -->
+                <div class="flex flex-col items-start">
+                    <a href="#" class="flex items-center gap-3 mb-6">
+                        <div class="relative h-14 w-auto flex items-center">
+                            <!-- Footer logo img -->
+                            <img src="logo.jpg" alt="NyumbaCheck Real Estate" class="h-12 w-auto object-contain block" onerror="this.style.display='none'; document.getElementById('footer-logo-fallback').classList.remove('hidden');">
+                            
+                            <!-- Fallback -->
+                            <div id="footer-logo-fallback" class="hidden flex items-center gap-2.5">
+                                <div class="w-9 h-9 relative flex items-center justify-center">
+                                    <svg viewBox="0 0 100 100" class="w-full h-full">
+                                        <circle cx="35" cy="30" r="10" fill="#7A9A3A" />
+                                        <circle cx="65" cy="20" r="12" fill="#7A9A3A" />
+                                        <circle cx="75" cy="35" r="8" fill="#DCA134" />
+                                        <path d="M20 55 L50 30 L80 55" stroke="#3E1825" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                                        <path d="M30 53 L30 75 A 5 5 0 0 0 35 80 L65 80 A 5 5 0 0 0 70 75 L70 53" fill="none" stroke="#3E1825" stroke-width="6" />
+                                        <rect x="43" y="55" width="14" height="14" rx="2" fill="#DCA134" />
+                                        <path d="M45 75 L55 85 L85 45" stroke="#5B8F39" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                                    </svg>
+                                </div>
+                                <span class="text-xl font-playfair font-black tracking-tight">nyumba<span class="text-trustgreen">check</span></span>
+                            </div>
+                        </div>
+                    </a>
+                    <p class="text-sm text-bodytext mb-6 max-w-sm leading-relaxed">
+                        Tanzania's definitive physical trust layer for premium real estate. Ground truth always overrides promotional claims.
+                    </p>
+                    <span class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-trustgreen/10 text-trustgreen text-xs font-bold uppercase tracking-wider">
+                        ✓ Physically Verified
+                    </span>
+                </div>
+
+                <!-- Col 2: Navigation Links -->
+                <div>
+                    <h5 class="text-xs font-bold tracking-widest text-neutral-400 uppercase mb-6">Platform</h5>
+                    <ul class="space-y-4 text-sm font-bold">
+                        <li><a href="#why-us" class="hover:underline hover:text-trustgreen transition-colors">Why Us</a></li>
+                        <li><a href="#process" class="hover:underline hover:text-trustgreen transition-colors">How It Works</a></li>
+                        <li><a href="#verify" class="hover:underline hover:text-trustgreen transition-colors">Verification Protocol</a></li>
+                        <li><a href="#faq" class="hover:underline hover:text-trustgreen transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Contact & Socials -->
+                <div>
+                    <h5 class="text-xs font-bold tracking-widest text-neutral-400 uppercase mb-6">Direct Channels</h5>
+                    <ul class="space-y-3.5 text-sm text-bodytext mb-6">
+                        <li class="flex items-center gap-2">
+                            <span class="font-bold text-charcoal">WhatsApp:</span> 
+                            <a href="https://wa.me/255791692360" target="_blank" rel="noopener noreferrer" class="hover:text-trustgreen underline">+255 791 692 360</a>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="font-bold text-charcoal">Email:</span> 
+                            <a href="mailto:nyumbacheck@gmail.com" class="hover:text-trustgreen underline font-medium">nyumbacheck@gmail.com</a>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="font-bold text-charcoal">Location:</span> Dar es Salaam, Tanzania
+                        </li>
+                    </ul>
+
+                    <!-- Social Icons Row -->
+                    <div class="flex items-center gap-4">
+                        <a href="https://instagram.com/nyumbacheck1" target="_blank" rel="noopener noreferrer" class="text-neutral-500 hover:text-[#E1306C] transition-all" aria-label="Instagram">
+                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                            </svg>
+                        </a>
+                        <a href="https://www.facebook.com/profile.php?id=61589131694289" target="_blank" rel="noopener noreferrer" class="text-neutral-500 hover:text-[#1877F2] transition-all" aria-label="Facebook">
+                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                        <a href="https://wa.me/255791692360" target="_blank" rel="noopener noreferrer" class="text-neutral-500 hover:text-[#25D366] transition-all" aria-label="WhatsApp">
+                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.731-1.456L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.965C16.588 1.977 14.12 .953 11.503.953c-5.438 0-9.861 4.37-9.865 9.801-.001 1.944.512 3.842 1.488 5.531l-.979 3.575 3.673-.951zm12.336-6.19c-.316-.156-1.872-.911-2.162-1.014-.29-.104-.502-.156-.713.156-.21.312-.818 1.014-1.001 1.222-.183.208-.365.234-.681.078-.315-.156-1.33-.483-2.533-1.543-.936-.824-1.568-1.841-1.752-2.153-.183-.312-.02-.481.137-.636.141-.14.316-.364.475-.546.158-.182.211-.312.316-.52.106-.208.053-.39-.026-.546-.079-.156-.713-1.693-.977-2.314-.258-.611-.52-.529-.713-.538-.184-.01-.395-.01-.607-.01s-.554.078-.844.39c-.29.312-1.108 1.066-1.108 2.6s1.135 3.014 1.293 3.222c.158.208 2.233 3.367 5.409 4.706.756.32 1.345.511 1.805.655.76.239 1.451.205 1.999.124.61-.09 1.872-.754 2.136-1.444.264-.689.264-1.275.184-1.393-.079-.12-.29-.197-.606-.353z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-neutral-400 gap-4">
+                <p>&copy; 2026 NyumbaCheck DSM. All rights reserved.</p>
+                <p class="font-playfair italic font-bold text-charcoal">Verify first. Buy confidently.</p>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- SECTION 11: FLOATING WHATSAPP BUTTON -->
+    <a href="https://wa.me/255791692360" target="_blank" rel="noopener noreferrer" class="fixed bottom-6 right-6 z-[200] flex items-center bg-[#25D366] text-white p-4 rounded-full shadow-[0_4px_24px_rgba(37,211,102,0.4)] hover:shadow-[0_6px_32px_rgba(37,211,102,0.6)] group transition-all duration-300 max-w-xs overflow-hidden">
+        <svg class="w-6 h-6 shrink-0 fill-current" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.731-1.456L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.965C16.588 1.977 14.12 .953 11.503.953c-5.438 0-9.861 4.37-9.865 9.801-.001 1.944.512 3.842 1.488 5.531l-.979 3.575 3.673-.951zm12.336-6.19c-.316-.156-1.872-.911-2.162-1.014-.29-.104-.502-.156-.713.156-.21.312-.818 1.014-1.001 1.222-.183.208-.365.234-.681.078-.315-.156-1.33-.483-2.533-1.543-.936-.824-1.568-1.841-1.752-2.153-.183-.312-.02-.481.137-.636.141-.14.316-.364.475-.546.158-.182.211-.312.316-.52.106-.208.053-.39-.026-.546-.079-.156-.713-1.693-.977-2.314-.258-.611-.52-.529-.713-.538-.184-.01-.395-.01-.607-.01s-.554.078-.844.39c-.29.312-1.108 1.066-1.108 2.6s1.135 3.014 1.293 3.222c.158.208 2.233 3.367 5.409 4.706.756.32 1.345.511 1.805.655.76.239 1.451.205 1.999.124.61-.09 1.872-.754 2.136-1.444.264-.689.264-1.275.184-1.393-.079-.12-.29-.197-.606-.353z"/>
+        </svg>
+        <span class="max-w-0 opacity-0 group-hover:max-w-xs group-hover:opacity-100 group-hover:ml-3 transition-all duration-300 font-bold text-sm tracking-wide whitespace-nowrap">
+            Chat on WhatsApp
+        </span>
+    </a>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            
+            // --- 1. STICKY HEADER SCROLL EFFECT ---
+            const header = document.getElementById("sticky-header");
+            window.addEventListener("scroll", () => {
+                if (window.scrollY > 40) {
+                    header.classList.add("py-3", "shadow-sm");
+                    header.classList.remove("py-4");
+                } else {
+                    header.classList.add("py-4");
+                    header.classList.remove("py-3", "shadow-sm");
+                }
+            });
+
+            // --- 2. MOBILE MENU INTERACTION ---
+            const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+            const mobileMenu = document.getElementById("mobile-menu");
+            const menuIconHamburger = document.getElementById("menu-icon-hamburger");
+            const menuIconClose = document.getElementById("menu-icon-close");
+
+            mobileMenuBtn.addEventListener("click", () => {
+                const isOpen = !mobileMenu.classList.contains("hidden");
+                if (isOpen) {
+                    mobileMenu.classList.add("hidden");
+                    menuIconHamburger.classList.remove("hidden");
+                    menuIconClose.classList.add("hidden");
+                } else {
+                    mobileMenu.classList.remove("hidden");
+                    menuIconHamburger.bg-white;
+                    menuIconHamburger.classList.add("hidden");
+                    menuIconClose.classList.remove("hidden");
+                }
+            });
+
+            // Close mobile menu when links are clicked
+            const mobileLinks = mobileMenu.querySelectorAll("nav a, .flex-col a");
+            mobileLinks.forEach(link => {
+                link.addEventListener("click", () => {
+                    mobileMenu.classList.add("hidden");
+                    menuIconHamburger.classList.remove("hidden");
+                    menuIconClose.classList.add("hidden");
+                });
+            });
+
+            // --- 3. SCROLL TRIGGER ANIMATION (Intersection Observer) ---
+            const fadeUpElements = document.querySelectorAll(".fade-up");
+            
+            const observerOptions = {
+                root: null,
+                threshold: 0.05,
+                rootMargin: "0px 0px -10px 0px"
+            };
+
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("visible");
+                        obs.unobserve(entry.target); // Animates once
+                    }
+                });
+            }, observerOptions);
+
+            fadeUpElements.forEach((el, index) => {
+                const delay = (index % 3) * 100;
+                el.style.transitionDelay = `${delay}ms`;
+                observer.observe(el);
+            });
+
+            // --- 4. FAQ ACCORDION LOGIC ---
+            const accordionToggles = document.querySelectorAll(".accordion-toggle");
+
+            accordionToggles.forEach(toggle => {
+                toggle.addEventListener("click", () => {
+                    const parent = toggle.parentElement;
+                    const isActive = parent.classList.contains("accordion-active");
+                    const icon = toggle.querySelector(".accordion-icon");
+
+                    // Close open accordions
+                    document.querySelectorAll(".accordion-active").forEach(activeItem => {
+                        activeItem.classList.remove("accordion-active");
+                        const activeToggle = activeItem.querySelector(".accordion-toggle");
+                        activeToggle.classList.remove("text-trustgreen");
+                        const activeIcon = activeItem.querySelector(".accordion-icon");
+                        if (activeIcon) {
+                            activeIcon.style.transform = "rotate(0deg)";
+                            activeIcon.textContent = "+";
+                        }
+                    });
+
+                    // Toggle current element
+                    if (!isActive) {
+                        parent.classList.add("accordion-active");
+                        toggle.classList.add("text-trustgreen");
+                        if (icon) {
+                            icon.style.transform = "rotate(45deg)";
+                            icon.textContent = "×";
+                        }
+                    }
+                });
+            });
+
+            // --- 5. INTERACTIVE FORM ENGINE SUBMISSION ---
+            const verificationForm = document.getElementById("verification-form-element");
+            const successAlert = document.getElementById("form-success-alert");
+
+            verificationForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+
+                // Show success container
+                successAlert.classList.remove("hidden");
+                verificationForm.reset();
+
+                // Smooth scroll directly to submission feedback box
+                successAlert.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+                // Retain banner for 8 seconds
+                setTimeout(() => {
+                    successAlert.classList.add("hidden");
+                }, 8000);
+            });
+
+        });
+    </script>
+</body>
+</html>
