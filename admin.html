@@ -1,1 +1,91 @@
+<!-- File: admin.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Property | NyumbaCheck DSM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans p-8">
 
+  <div class="max-w-xl mx-auto bg-white p-8 rounded-2xl shadow-xl border border-slate-100">
+    <h1 class="text-2xl font-bold mb-6">Upload New Verified Listing</h1>
+    
+    <form id="uploadForm" class="space-y-4">
+      <div>
+        <label class="block text-sm font-bold text-slate-700">Property Title</label>
+        <input type="text" id="title" required class="w-full px-4 py-2 rounded-lg border border-slate-200 mt-1">
+      </div>
+      
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-bold text-slate-700">Price (TZS)</label>
+          <input type="text" id="price" required class="w-full px-4 py-2 rounded-lg border border-slate-200 mt-1">
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-slate-700">Type</label>
+          <select id="type" class="w-full px-4 py-2 rounded-lg border border-slate-200 mt-1">
+            <option>Rent</option>
+            <option>Sale</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-bold text-slate-700">Neighborhood</label>
+        <input type="text" id="neighborhood" required class="w-full px-4 py-2 rounded-lg border border-slate-200 mt-1">
+      </div>
+
+      <div>
+        <label class="block text-sm font-bold text-slate-700">Image URL</label>
+        <input type="url" id="image" placeholder="https://..." required class="w-full px-4 py-2 rounded-lg border border-slate-200 mt-1">
+        <p class="text-xs text-slate-400 mt-1">Paste a link to the property photo.</p>
+      </div>
+
+      <button type="submit" class="w-full bg-slate-950 text-white font-bold py-3 rounded-lg mt-4 hover:bg-emerald-600 transition">
+        Publish Live to Website
+      </button>
+    </form>
+    
+    <div id="status" class="mt-4 text-center text-sm font-bold hidden"></div>
+  </div>
+
+  <script>
+    document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button');
+      const statusDiv = document.getElementById('status');
+      btn.innerText = "Uploading...";
+
+      const newProperty = {
+        title: document.getElementById('title').value,
+        price: document.getElementById('price').value,
+        type: document.getElementById('type').value,
+        neighborhood: document.getElementById('neighborhood').value,
+        image: document.getElementById('image').value,
+        status: "Verified Safe"
+      };
+
+      try {
+        // Send data to your new Cloudflare API
+        const response = await fetch('/api/properties', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newProperty)
+        });
+
+        if(response.ok) {
+          statusDiv.innerText = "✅ Property Published Successfully!";
+          statusDiv.className = "mt-4 text-center text-sm font-bold text-emerald-600 block";
+          e.target.reset();
+        }
+      } catch (err) {
+        statusDiv.innerText = "❌ Upload Failed.";
+        statusDiv.className = "mt-4 text-center text-sm font-bold text-rose-600 block";
+      }
+      btn.innerText = "Publish Live to Website";
+    });
+  </script>
+</body>
+</html>
