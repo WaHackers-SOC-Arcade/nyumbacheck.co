@@ -1,0 +1,49 @@
+<script>
+  document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    const statusDiv = document.getElementById('status');
+    if (!statusDiv) return; // Prevents errors if the status div is missing
+    
+    btn.innerText = "Uploading...";
+    statusDiv.innerText = ""; // Clear old messages
+
+    // 1. Gather your form input values
+    const formData = {
+      title: document.getElementById('title').value,
+      price: document.getElementById('price').value,
+      type: document.getElementById('type').value,
+      neighborhood: document.getElementById('neighborhood').value,
+      image: document.getElementById('image').value
+    };
+
+    try {
+      // 2. Send data to your _worker.js backend
+      const response = await fetch('/api/properties', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      const result = await response.json();
+
+      // 3. CRITICAL CHECK: If Cloudflare sent a 500 or 404 error, stop here!
+      if (!response.ok) {
+        throw new Error(result.error || `Server returned status ${response.status}`);
+      }
+
+      // 4. Only show green if the database actually accepted it
+      statusDiv.innerText = "✅ Property Submitted for Verification!";
+      statusDiv.className = "mt-4 text-center text-sm font-bold text-emerald-600 block";
+      e.target.reset();
+
+    } catch (error) {
+      // 5. This will now catch the real issue (e.g., "NYUMBA_DB is not defined")
+      statusDiv.innerText = "❌ Upload Failed: " + error.message;
+      statusDiv.className = "mt-4 text-center text-sm font-bold text-rose-600 block";
+      console.error("Database Error:", error);
+    } finally {
+      btn.innerText = "Publish Live to Website";
+    }
+  });
+</script>
