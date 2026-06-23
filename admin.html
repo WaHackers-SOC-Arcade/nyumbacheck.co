@@ -1,50 +1,101 @@
-export default {
-  async fetch(request, env, ctx) {
-    const url = new URL(request.url);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NyumbaCheck DSM - Admin Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-6">
 
-    // 1. AUTO-ROUTER: If you type /admin, automatically serve admin.html
-    if (url.pathname === "/admin") {
-      return env.ASSETS.fetch(new Request(url.origin + "/admin.html", request));
-    }
+  <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 w-full max-w-md">
+    <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Upload New Property</h1>
+    <p class="text-slate-500 text-sm mt-1">Submissions default to 'Pending' until physically verified.</p>
 
-    // 2. ACTION: Form submission
-    if (url.pathname === "/api/properties" && request.method === "POST") {
+    <form id="uploadForm" class="mt-6 space-y-4">
+      <div>
+        <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider">Property Title</label>
+        <input type="text" id="title" required placeholder="e.g., Modern Apartment in Masaki" class="mt-1 w-full px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-900">
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider">Price (TZS)</label>
+        <input type="text" id="price" required placeholder="e.g., 1,500,000 TZS" class="mt-1 w-full px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-900">
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider">Type</label>
+          <select id="type" class="mt-1 w-full px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-900">
+            <option value="Rent">Rent</option>
+            <option value="Sale">Sale</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider">Neighborhood</label>
+          <input type="text" id="neighborhood" required placeholder="e.g., Masaki" class="mt-1 w-full px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-900">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider">Image URL</label>
+        <input type="url" id="image" required placeholder="https://images.unsplash.com/..." class="mt-1 w-full px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-900">
+      </div>
+
+      <button type="submit" class="w-full bg-slate-900 text-white font-bold py-3 rounded-lg hover:bg-slate-800 transition text-sm">
+        Publish Live to Website
+      </button>
+    </form>
+
+    <div id="status" class="hidden mt-4 text-center text-sm font-bold"></div>
+  </div>
+
+  <script>
+    document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button');
+      const statusDiv = document.getElementById('status');
+      
+      btn.disabled = true;
+      btn.innerText = "Uploading to Database...";
+      statusDiv.classList.remove('hidden');
+      statusDiv.innerText = "Sending...";
+      statusDiv.className = "mt-4 text-center text-sm font-bold text-slate-500 block";
+
+      const formData = {
+        title: document.getElementById('title').value,
+        price: document.getElementById('price').value,
+        type: document.getElementById('type').value,
+        neighborhood: document.getElementById('neighborhood').value,
+        image: document.getElementById('image').value
+      };
+
       try {
-        const data = await request.json();
-        const propertyId = "prop_" + Date.now();
-        
-        data.id = propertyId;
-        data.status = "Pending"; 
-        data.date_submitted = new Date().toISOString();
-
-        await env.NYUMBA_DB.put(propertyId, JSON.stringify(data));
-
-        return new Response(JSON.stringify({ success: true, id: propertyId }), {
-          headers: { "Content-Type": "application/json" },
+        const response = await fetch('/api/properties', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
         });
-      } catch (err) {
-        return new Response(JSON.stringify({ error: err.message }), { status: 500 });
-      }
-    }
 
-    // 3. ACTION: Get properties list
-    if (url.pathname === "/api/properties" && request.method === "GET") {
-      const list = await env.NYUMBA_DB.list();
-      const properties = [];
-      
-      for (const key of list.keys) {
-        const value = await env.NYUMBA_DB.get(key.name);
-        if (value) {
-          properties.push(JSON.parse(value));
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || `Server error: ${response.status}`);
         }
-      }
-      
-      return new Response(JSON.stringify(properties), {
-        headers: { "Content-Type": "application/json" },
-      });
-    }
 
-    // 4. FALLBACK: Serve static assets (index.html, etc.)
-    return env.ASSETS.fetch(request);
-  } 
-};
+        statusDiv.innerText = "✅ Property Submitted successfully!";
+        statusDiv.className = "mt-4 text-center text-sm font-bold text-emerald-600 block";
+        e.target.reset();
+
+      } catch (error) {
+        statusDiv.innerText = "❌ Error: " + error.message;
+        statusDiv.className = "mt-4 text-center text-sm font-bold text-rose-600 block";
+        console.error("Submission failed:", error);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Publish Live to Website";
+      }
+    });
+  </script>
+</body>
+</html>
