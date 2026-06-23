@@ -1,0 +1,23 @@
+backend:
+  name: github
+  repo: WaHackers-SOC-Arcade/nyumbacheck.co # <--- CHANGE THIS to your actual username and repo name
+  branch: main
+
+publish_mode: editorial_workflow
+
+media_folder: "assets/images"
+public_folder: "/assets/images"
+
+collections:
+  - name: "properties"
+    label: "Properties"
+    folder: "content/properties"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Title", name: "title", widget: "string"}
+      - {label: "Price (TZS)", name: "price", widget: "number"}
+      - {label: "Status", name: "status", widget: "select", options: ["Pending", "Verified"]}
+      - {label: "Photos", name: "photos", widget: "image"}
+      - {label: "Title Deed", name: "deed", widget: "file"}
+      - {label: "Body", name: "body", widget: "markdown"}
