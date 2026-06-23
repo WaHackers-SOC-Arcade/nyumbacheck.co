@@ -15,9 +15,13 @@ collections:
     create: true
     slug: "{{slug}}"
     fields:
-      - {label: "Title", name: "title", widget: "string"}
-      - {label: "Price (TZS)", name: "price", widget: "number"}
-      - {label: "Status", name: "status", widget: "select", options: ["Pending", "Verified"]}
-      - {label: "Photos", name: "photos", widget: "image"}
-      - {label: "Title Deed", name: "deed", widget: "file"}
-      - {label: "Body", name: "body", widget: "markdown"}
+        - {label: "Title", name: "title", widget: "string"}
+        - {label: "City", name: "city", widget: "select", options: ["Dar es Salaam", "Zanzibar", "Arusha", "Dodoma"]}
+        - {label: "Neighborhood", name: "neighborhood", widget: "string"}
+        - {label: "Price Amount", name: "price", widget: "number"}
+        - {label: "Currency", name: "currency", widget: "select", options: ["TZS", "USD"]}
+        - {label: "Listing Type", name: "type", widget: "select", options: ["Rent", "Sale"]}
+        - {label: "Status", name: "status", widget: "select", options: ["Pending", "Verified"]}
+        - {label: "Photos", name: "photos", widget: "image"}
+        - {label: "Title Deed", name: "deed", widget: "file"}
+        - {label: "Body", name: "body", widget: "markdown"}
