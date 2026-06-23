@@ -170,16 +170,13 @@ let currentFilter = 'all';
 
 // ── Auth ────────────────────────────────────────────────────────
 async function login() {
-  WORKER = document.getElementById('workerUrl').value.trim().replace(/\/$/, '');
-  TOKEN  = document.getElementById('tokenInput').value.trim();
-  if (!WORKER || !TOKEN) return;
+  TOKEN = document.getElementById('tokenInput').value.trim();
+  if (!TOKEN) return;
 
   // Try fetching listings to verify token
-  try {
-    const res = await fetch(`${WORKER}/admin/listings?token=${TOKEN}`);
-    if (res.status === 401) {
-      document.getElementById('loginError').classList.remove('hidden');
-      return;
+sessionStorage.setItem('nc_token', TOKEN);
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('dashboard').classList.remove('hidden');
     }
     // Save to session
     sessionStorage.setItem('nc_worker', WORKER);
@@ -187,18 +184,26 @@ async function login() {
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('dashboard').classList.remove('hidden');
     const data = await res.json();
-    processListings(data.listings || []);
+loadListings();
+}
+  
+async function loadListings() {
+  document.getElementById('loadingState').classList.remove('hidden');
+  document.getElementById('listingsGrid').classList.add('hidden');
+  document.getElementById('emptyState').classList.add('hidden');
+  
+  try {
+    // 🎯 Pointing to your new integrated database
+    const res = await fetch(`/api/properties`); 
+    const data = await res.json();
+    
+ processListings(data || []); 
+    document.getElementById('last-refresh').innerText = new Date().toLocaleTimeString();
   } catch (err) {
-    document.getElementById('loginError').classList.remove('hidden');
-    document.getElementById('loginError').innerText = 'Could not reach Worker. Check the URL.';
+    alert('Failed to load listings. Check your Database connection.');
+    document.getElementById('loadingState').classList.add('hidden');
   }
 }
-
-function logout() {
-  sessionStorage.clear();
-  location.reload();
-}
-
 // ── Auto-restore session ─────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
   const w = sessionStorage.getItem('nc_worker');
