@@ -943,6 +943,51 @@ function quickChat(msg) {
   document.getElementById('chatInput').value = msg;
   sendChat();
 }
+  <!-- ======================== FORM SUBMISSION SCRIPT ======================== -->
+  <script>
+// This script stops the default submit and sends data to your integrated backend
+document.getElementById('listingForm').addEventListener('submit', async (e) => {
+  e.preventDefault(); // 🛑 THIS STOPS OUTLOOK OR PAGE RELOADS
+
+  // Change the button text so the user knows it's working
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  const originalText = submitBtn.innerText;
+  submitBtn.innerText = "Submitting...";
+
+  // Gather data using your exact input IDs
+  const formData = {
+    name: document.getElementById('ls-name').value,
+    email: document.getElementById('ls-email').value,
+    city: document.getElementById('ls-city').value,
+    neighborhood: document.getElementById('ls-neighborhood').value,
+    type: document.getElementById('ls-type').value,
+    beds: document.getElementById('ls-beds').value,
+    price: document.getElementById('ls-price').value,
+    description: document.getElementById('ls-description').value,
+    photos: document.getElementById('ls-photos').value,
+    hasDeed: document.getElementById('ls-deed').checked // Captures the checkbox
+  };
+
+  // Send it to your Cloudflare Database
+  try {
+    const response = await fetch('/api/properties', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    
+    if(response.ok) {
+      alert("Success! Property sent to Admin Dashboard for verification.");
+      e.target.reset(); // Clears the form
+    } else {
+      alert("Error saving property. Please try again.");
+    }
+  } catch (err) {
+    alert("Connection failed. Check your network.");
+  } finally {
+    submitBtn.innerText = originalText; // Reset button text
+  }
+});
 
 </script>
 </body>
