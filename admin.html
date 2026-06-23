@@ -3,99 +3,470 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NyumbaCheck DSM - Admin Portal</title>
+  <title>NyumbaCheck Admin — Property Submissions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Playfair Display"', 'serif'],
+            sans:  ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brandRed:   '#4A1521',
+            brandGreen: '#738A43',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .status-pending  { background:#fef9c3; color:#92400e; border:1px solid #fde68a; }
+    .status-approved { background:#dcfce7; color:#166534; border:1px solid #86efac; }
+    .status-rejected { background:#fee2e2; color:#991b1b; border:1px solid #fca5a5; }
+    .photo-thumb { width:72px; height:72px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform .15s; }
+    .photo-thumb:hover { transform:scale(1.06); }
+    .slide-in { animation: slideIn .2s ease; }
+    @keyframes slideIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  </style>
 </head>
-<body class="bg-slate-50 min-h-screen flex items-center justify-center p-6">
+<body class="bg-slate-100 font-sans antialiased min-h-screen">
 
-  <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 w-full max-w-md">
-    <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Upload New Property</h1>
-    <p class="text-slate-500 text-sm mt-1">Submissions default to 'Pending' until physically verified.</p>
-
-    <form id="uploadForm" class="mt-6 space-y-4">
+<!-- ═══════════════════ LOGIN SCREEN ═══════════════════ -->
+<div id="loginScreen" class="min-h-screen flex items-center justify-center px-4">
+  <div class="bg-white rounded-2xl shadow-2xl p-10 w-full max-w-sm text-center">
+    <div class="flex items-center justify-center gap-2 mb-6">
+      <svg class="w-9 h-9 text-brandRed" viewBox="0 0 100 100" fill="none">
+        <path d="M20 55 L50 25 L80 55" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+        <path d="M42 45 H58 V65 H42 Z" fill="#D4AF37"/>
+        <path d="M50 62 L65 75 L90 45" stroke="#738A43" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="text-left">
+        <span class="block text-xl font-serif text-brandRed">nyumba<span class="text-brandGreen font-medium">check</span></span>
+        <span class="block text-[9px] uppercase tracking-widest text-stone-400 font-bold -mt-1">Admin Dashboard</span>
+      </div>
+    </div>
+    <h2 class="text-lg font-serif text-stone-800 mb-1">Welcome back, Jillian</h2>
+    <p class="text-xs text-stone-400 mb-6">Enter your admin token to continue</p>
+    <div class="space-y-3">
       <div>
-        <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider">Property Title</label>
-        <input type="text" id="title" required placeholder="e.g., Modern Apartment in Masaki" class="mt-1 w-full px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-900">
+        <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-1 text-left">Worker URL</label>
+        <input id="workerUrl" type="text" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brandGreen"
+          placeholder="https://nyumbacheck-api.jilliandeo040.workers.dev"
+          value="https://nyumbacheck-api.jilliandeo040.workers.dev">
       </div>
-
       <div>
-        <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider">Price (TZS)</label>
-        <input type="text" id="price" required placeholder="e.g., 1,500,000 TZS" class="mt-1 w-full px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-900">
+        <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-1 text-left">Admin Token</label>
+        <input id="tokenInput" type="password" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brandGreen"
+          placeholder="Enter your ADMIN_TOKEN"
+          onkeydown="if(event.key==='Enter')login()">
       </div>
-
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider">Type</label>
-          <select id="type" class="mt-1 w-full px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-900">
-            <option value="Rent">Rent</option>
-            <option value="Sale">Sale</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider">Neighborhood</label>
-          <input type="text" id="neighborhood" required placeholder="e.g., Masaki" class="mt-1 w-full px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-900">
-        </div>
-      </div>
-
-      <div>
-        <label class="block text-xs font-bold uppercase text-slate-700 tracking-wider">Image URL</label>
-        <input type="url" id="image" required placeholder="https://images.unsplash.com/..." class="mt-1 w-full px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-900">
-      </div>
-
-      <button type="submit" class="w-full bg-slate-900 text-white font-bold py-3 rounded-lg hover:bg-slate-800 transition text-sm">
-        Publish Live to Website
+      <button onclick="login()" class="w-full bg-brandRed text-white font-bold py-3 rounded-xl hover:bg-stone-900 transition text-sm uppercase tracking-widest mt-2">
+        Sign In
       </button>
-    </form>
+    </div>
+    <p id="loginError" class="hidden text-xs text-red-500 mt-3 font-bold">Wrong token. Try again.</p>
+    <p class="text-[10px] text-stone-300 mt-6">Your ADMIN_TOKEN is the one you set in Cloudflare Worker → Settings → Variables</p>
+  </div>
+</div>
 
-    <div id="status" class="hidden mt-4 text-center text-sm font-bold"></div>
+<!-- ═══════════════════ MAIN DASHBOARD ═══════════════════ -->
+<div id="dashboard" class="hidden">
+
+  <!-- Top Nav -->
+  <nav class="bg-brandRed text-white px-6 py-3 flex items-center justify-between shadow-md">
+    <div class="flex items-center gap-3">
+      <svg class="w-7 h-7" viewBox="0 0 100 100" fill="none">
+        <path d="M20 55 L50 25 L80 55" stroke="white" stroke-width="6" stroke-linecap="round"/>
+        <path d="M42 45 H58 V65 H42 Z" fill="#D4AF37"/>
+        <path d="M50 62 L65 75 L90 45" stroke="#738A43" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div>
+        <span class="font-serif text-lg">nyumba<span class="text-brandGreen font-medium">check</span></span>
+        <span class="text-red-200 text-[10px] ml-2 uppercase tracking-widest">Admin</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <button onclick="loadListings()" class="text-xs bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl transition font-bold flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        Refresh
+      </button>
+      <button onclick="logout()" class="text-xs text-red-200 hover:text-white transition font-bold">Sign Out</button>
+    </div>
+  </nav>
+
+  <!-- Stats Bar -->
+  <div class="bg-white border-b border-stone-200 px-6 py-4">
+    <div class="max-w-7xl mx-auto flex items-center gap-8">
+      <div class="text-center">
+        <p class="text-2xl font-serif font-bold text-brandRed" id="stat-total">—</p>
+        <p class="text-[10px] uppercase tracking-widest text-stone-400 font-bold">Total</p>
+      </div>
+      <div class="w-px h-8 bg-stone-200"></div>
+      <div class="text-center">
+        <p class="text-2xl font-serif font-bold text-amber-600" id="stat-pending">—</p>
+        <p class="text-[10px] uppercase tracking-widest text-stone-400 font-bold">Pending</p>
+      </div>
+      <div class="w-px h-8 bg-stone-200"></div>
+      <div class="text-center">
+        <p class="text-2xl font-serif font-bold text-brandGreen" id="stat-approved">—</p>
+        <p class="text-[10px] uppercase tracking-widest text-stone-400 font-bold">Approved</p>
+      </div>
+      <div class="w-px h-8 bg-stone-200"></div>
+      <div class="text-center">
+        <p class="text-2xl font-serif font-bold text-red-500" id="stat-rejected">—</p>
+        <p class="text-[10px] uppercase tracking-widest text-stone-400 font-bold">Rejected</p>
+      </div>
+      <div class="ml-auto">
+        <p class="text-[10px] text-stone-400">Last refreshed: <span id="last-refresh">—</span></p>
+      </div>
+    </div>
   </div>
 
-  <script>
-    document.getElementById('uploadForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const btn = e.target.querySelector('button');
-      const statusDiv = document.getElementById('status');
-      
-      btn.disabled = true;
-      btn.innerText = "Uploading to Database...";
-      statusDiv.classList.remove('hidden');
-      statusDiv.innerText = "Sending...";
-      statusDiv.className = "mt-4 text-center text-sm font-bold text-slate-500 block";
+  <!-- Filter Tabs -->
+  <div class="bg-white border-b border-stone-200 px-6">
+    <div class="max-w-7xl mx-auto flex gap-6">
+      <button onclick="setFilter('all')"      id="tab-all"      class="py-3 text-sm font-bold border-b-2 border-brandRed text-brandRed transition">All</button>
+      <button onclick="setFilter('pending')"  id="tab-pending"  class="py-3 text-sm font-bold border-b-2 border-transparent text-stone-400 hover:text-stone-700 transition">⏳ Pending</button>
+      <button onclick="setFilter('approved')" id="tab-approved" class="py-3 text-sm font-bold border-b-2 border-transparent text-stone-400 hover:text-stone-700 transition">✅ Approved</button>
+      <button onclick="setFilter('rejected')" id="tab-rejected" class="py-3 text-sm font-bold border-b-2 border-transparent text-stone-400 hover:text-stone-700 transition">❌ Rejected</button>
+    </div>
+  </div>
 
-      const formData = {
-        title: document.getElementById('title').value,
-        price: document.getElementById('price').value,
-        type: document.getElementById('type').value,
-        neighborhood: document.getElementById('neighborhood').value,
-        image: document.getElementById('image').value
-      };
+  <!-- Listings Grid -->
+  <div class="max-w-7xl mx-auto px-6 py-8">
+    <div id="loadingState" class="text-center py-20 text-stone-400">
+      <div class="animate-spin w-8 h-8 border-4 border-brandRed border-t-transparent rounded-full mx-auto mb-4"></div>
+      <p class="text-sm">Loading submissions...</p>
+    </div>
+    <div id="emptyState" class="hidden text-center py-20">
+      <p class="text-4xl mb-3">📭</p>
+      <p class="text-stone-400 font-serif text-xl">No submissions yet</p>
+      <p class="text-stone-400 text-sm mt-1">When sellers submit properties on your website, they'll appear here.</p>
+    </div>
+    <div id="listingsGrid" class="hidden grid gap-6"></div>
+  </div>
+</div>
 
-      try {
-        const response = await fetch('/api/properties', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
-        });
+<!-- ═══════════════════ PHOTO LIGHTBOX ═══════════════════ -->
+<div id="lightbox" class="fixed inset-0 z-[200] hidden flex items-center justify-center bg-black/90 p-4" onclick="closeLightbox()">
+  <button class="absolute top-4 right-4 text-white hover:text-stone-300 text-3xl font-light">&times;</button>
+  <img id="lightboxImg" src="" class="max-h-[90vh] max-w-[90vw] rounded-xl object-contain" onclick="event.stopPropagation()">
+</div>
 
-        const result = await response.json();
+<!-- ═══════════════════ CODE COPY TOAST ═══════════════════ -->
+<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] hidden bg-stone-900 text-white text-xs font-bold px-6 py-3 rounded-full shadow-xl">
+  ✅ Listing code copied to clipboard!
+</div>
 
-        if (!response.ok) {
-          throw new Error(result.error || `Server error: ${response.status}`);
-        }
+<script>
+// ── State ───────────────────────────────────────────────────────
+let WORKER   = '';
+let TOKEN    = '';
+let allData  = [];
+let currentFilter = 'all';
 
-        statusDiv.innerText = "✅ Property Submitted successfully!";
-        statusDiv.className = "mt-4 text-center text-sm font-bold text-emerald-600 block";
-        e.target.reset();
+// ── Auth ────────────────────────────────────────────────────────
+async function login() {
+  WORKER = document.getElementById('workerUrl').value.trim().replace(/\/$/, '');
+  TOKEN  = document.getElementById('tokenInput').value.trim();
+  if (!WORKER || !TOKEN) return;
 
-      } catch (error) {
-        statusDiv.innerText = "❌ Error: " + error.message;
-        statusDiv.className = "mt-4 text-center text-sm font-bold text-rose-600 block";
-        console.error("Submission failed:", error);
-      } finally {
-        btn.disabled = false;
-        btn.innerText = "Publish Live to Website";
-      }
+  // Try fetching listings to verify token
+  try {
+    const res = await fetch(`${WORKER}/admin/listings?token=${TOKEN}`);
+    if (res.status === 401) {
+      document.getElementById('loginError').classList.remove('hidden');
+      return;
+    }
+    // Save to session
+    sessionStorage.setItem('nc_worker', WORKER);
+    sessionStorage.setItem('nc_token',  TOKEN);
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+    const data = await res.json();
+    processListings(data.listings || []);
+  } catch (err) {
+    document.getElementById('loginError').classList.remove('hidden');
+    document.getElementById('loginError').innerText = 'Could not reach Worker. Check the URL.';
+  }
+}
+
+function logout() {
+  sessionStorage.clear();
+  location.reload();
+}
+
+// ── Auto-restore session ─────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const w = sessionStorage.getItem('nc_worker');
+  const t = sessionStorage.getItem('nc_token');
+  if (w && t) {
+    WORKER = w; TOKEN = t;
+    document.getElementById('workerUrl').value   = w;
+    document.getElementById('tokenInput').value  = t;
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+    loadListings();
+  }
+});
+
+// ── Load listings ───────────────────────────────────────────────
+async function loadListings() {
+  document.getElementById('loadingState').classList.remove('hidden');
+  document.getElementById('listingsGrid').classList.add('hidden');
+  document.getElementById('emptyState').classList.add('hidden');
+  try {
+    const res  = await fetch(`${WORKER}/admin/listings?token=${TOKEN}`);
+    const data = await res.json();
+    processListings(data.listings || []);
+    document.getElementById('last-refresh').innerText = new Date().toLocaleTimeString();
+  } catch (err) {
+    alert('Failed to load listings. Check your Worker is running.');
+    document.getElementById('loadingState').classList.add('hidden');
+  }
+}
+
+function processListings(listings) {
+  allData = listings;
+  updateStats();
+  renderListings();
+  document.getElementById('loadingState').classList.add('hidden');
+}
+
+// ── Stats ────────────────────────────────────────────────────────
+function updateStats() {
+  document.getElementById('stat-total').innerText    = allData.length;
+  document.getElementById('stat-pending').innerText  = allData.filter(l => l.status === 'pending').length;
+  document.getElementById('stat-approved').innerText = allData.filter(l => l.status === 'approved').length;
+  document.getElementById('stat-rejected').innerText = allData.filter(l => l.status === 'rejected').length;
+}
+
+// ── Filter Tabs ──────────────────────────────────────────────────
+function setFilter(f) {
+  currentFilter = f;
+  ['all','pending','approved','rejected'].forEach(tab => {
+    const el = document.getElementById(`tab-${tab}`);
+    el.className = tab === f
+      ? 'py-3 text-sm font-bold border-b-2 border-brandRed text-brandRed transition'
+      : 'py-3 text-sm font-bold border-b-2 border-transparent text-stone-400 hover:text-stone-700 transition';
+  });
+  renderListings();
+}
+
+// ── Render listing cards ─────────────────────────────────────────
+function renderListings() {
+  const filtered = currentFilter === 'all'
+    ? allData
+    : allData.filter(l => l.status === currentFilter);
+
+  const grid = document.getElementById('listingsGrid');
+
+  if (filtered.length === 0) {
+    grid.classList.add('hidden');
+    document.getElementById('emptyState').classList.remove('hidden');
+    return;
+  }
+
+  document.getElementById('emptyState').classList.add('hidden');
+  grid.classList.remove('hidden');
+  grid.className = 'grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3';
+
+  grid.innerHTML = filtered.map(l => {
+    const photos  = l.photos || [];
+    const date    = new Date(l.submittedAt).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    const statusClass = `status-${l.status}`;
+    const statusLabel = l.status === 'pending' ? '⏳ Pending Review' : l.status === 'approved' ? '✅ Approved' : '❌ Rejected';
+    const waLink  = `https://wa.me/?text=${encodeURIComponent(`Hello ${l.name}, this is NyumbaCheck regarding your property submission in ${l.neighborhood}.`)}`;
+    const emailLink = `mailto:${l.email}?subject=NyumbaCheck — Your Property Submission (${l.neighborhood}, ${l.city})`;
+
+    return `
+    <div class="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden flex flex-col slide-in" id="card-${l.id}">
+
+      <!-- Status badge + date -->
+      <div class="px-5 pt-4 flex items-center justify-between">
+        <span class="text-[10px] font-bold px-3 py-1.5 rounded-full ${statusClass}">${statusLabel}</span>
+        <span class="text-[10px] text-stone-400">${date}</span>
+      </div>
+
+      <!-- Seller info -->
+      <div class="px-5 pt-3 pb-2 border-b border-stone-100">
+        <p class="font-bold text-stone-900">${l.name}</p>
+        <p class="text-xs text-stone-400">${l.email}</p>
+      </div>
+
+      <!-- Property details -->
+      <div class="px-5 py-3 space-y-1 border-b border-stone-100">
+        <div class="flex justify-between">
+          <span class="text-[10px] text-stone-400 uppercase tracking-wide font-bold">City</span>
+          <span class="text-xs font-bold text-stone-700">${l.city}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-[10px] text-stone-400 uppercase tracking-wide font-bold">Neighborhood</span>
+          <span class="text-xs font-bold text-stone-700">${l.neighborhood}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-[10px] text-stone-400 uppercase tracking-wide font-bold">Type</span>
+          <span class="text-xs font-bold text-stone-700">${l.type || '—'}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-[10px] text-stone-400 uppercase tracking-wide font-bold">Bedrooms</span>
+          <span class="text-xs font-bold text-stone-700">${l.beds || '—'}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-[10px] text-stone-400 uppercase tracking-wide font-bold">Price (TZS)</span>
+          <span class="text-xs font-bold text-brandRed">${l.price ? Number(l.price.replace(/,/g,'')).toLocaleString('en-TZ') : '—'}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-[10px] text-stone-400 uppercase tracking-wide font-bold">Title Deed</span>
+          <span class="text-xs font-bold ${l.hasDeed ? 'text-brandGreen' : 'text-red-400'}">${l.hasDeed ? '✓ Yes' : '✗ No'}</span>
+        </div>
+      </div>
+
+      <!-- Description -->
+      ${l.description ? `
+      <div class="px-5 py-3 border-b border-stone-100">
+        <p class="text-[10px] text-stone-400 uppercase tracking-wide font-bold mb-1">Description</p>
+        <p class="text-xs text-stone-600 leading-relaxed line-clamp-3">${l.description}</p>
+      </div>` : ''}
+
+      <!-- Photos -->
+      ${photos.length > 0 ? `
+      <div class="px-5 py-3 border-b border-stone-100">
+        <p class="text-[10px] text-stone-400 uppercase tracking-wide font-bold mb-2">${photos.length} Photo${photos.length > 1 ? 's' : ''}</p>
+        <div class="flex gap-2 flex-wrap">
+          ${photos.slice(0,8).map(url => `<img src="${url}" class="photo-thumb" onclick="openLightbox('${url}')" title="Click to enlarge">`).join('')}
+        </div>
+      </div>` : `
+      <div class="px-5 py-3 border-b border-stone-100">
+        <p class="text-[10px] text-stone-400 italic">No photos uploaded</p>
+      </div>`}
+
+      <!-- Action buttons -->
+      <div class="px-5 py-4 space-y-2 mt-auto">
+
+        <!-- Contact Seller -->
+        <div class="flex gap-2">
+          <a href="${emailLink}" class="flex-1 text-center text-[11px] font-bold py-2.5 rounded-xl bg-stone-50 border border-stone-200 text-stone-600 hover:bg-stone-100 transition flex items-center justify-center gap-1">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            Email Seller
+          </a>
+          <a href="${waLink}" target="_blank" class="flex-1 text-center text-[11px] font-bold py-2.5 rounded-xl bg-[#25D366]/10 border border-[#25D366]/30 text-[#1a9e4a] hover:bg-[#25D366] hover:text-white transition flex items-center justify-center gap-1">
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+
+        <!-- Approve / Reject -->
+        ${l.status !== 'approved' ? `
+        <button onclick="updateStatus('${l.id}', 'approved')"
+          class="w-full text-[11px] font-bold py-3 rounded-xl bg-brandGreen text-white hover:bg-green-700 transition uppercase tracking-widest flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Approve & Generate Listing Code
+        </button>` : ''}
+        ${l.status !== 'rejected' ? `
+        <button onclick="updateStatus('${l.id}', 'rejected')"
+          class="w-full text-[11px] font-bold py-3 rounded-xl bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 transition uppercase tracking-widest flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          Reject Listing
+        </button>` : ''}
+        ${l.status === 'approved' ? `
+        <button onclick="copyListingCode('${l.id}')"
+          class="w-full text-[11px] font-bold py-3 rounded-xl bg-brandRed text-white hover:bg-stone-900 transition uppercase tracking-widest flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          Copy Code → Paste in Website
+        </button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Update listing status ────────────────────────────────────────
+async function updateStatus(id, status) {
+  const label = status === 'approved' ? 'approve' : 'reject';
+  if (!confirm(`Are you sure you want to ${label} this listing?`)) return;
+
+  try {
+    const res = await fetch(`${WORKER}/admin/update-listing?token=${TOKEN}`, {
+      method:  'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ id, status })
     });
-  </script>
+    const result = await res.json();
+
+    if (result.success) {
+      // Update local data and re-render
+      const listing = allData.find(l => l.id === id);
+      if (listing) listing.status = status;
+      updateStats();
+      renderListings();
+
+      // If approved, auto-copy the code
+      if (status === 'approved') {
+        setTimeout(() => copyListingCode(id), 400);
+      }
+    } else {
+      alert('Update failed. Try refreshing and trying again.');
+    }
+  } catch (err) {
+    alert('Network error. Check your Worker is running.');
+  }
+}
+
+// ── Generate copy-paste code for website ─────────────────────────
+// When you approve a listing, this generates the JS object
+// you paste into your website's `properties` array.
+function copyListingCode(id) {
+  const l = allData.find(l => l.id === id);
+  if (!l) return;
+
+  const safePrice = l.price ? l.price.replace(/[^0-9]/g, '') : '0';
+  const firstPhoto = l.photos && l.photos.length > 0
+    ? l.photos[0]
+    : 'https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?w=600';
+
+  const code = `  {
+    id: "${id.slice(-6)}",
+    city: "${l.city}",
+    neighborhood: "${l.neighborhood}",
+    title: "${l.description ? l.description.split('.')[0].substring(0, 60) : l.neighborhood + ' Property'}",
+    type: "${l.type === 'For Rent' ? 'Rent' : 'Sale'}",
+    price: ${safePrice},
+    beds: ${parseInt(l.beds) || 2},
+    baths: ${parseInt(l.beds) || 1},
+    deed: ${l.hasDeed ? 'true' : 'false'},
+    description: "${(l.description || '').replace(/"/g, "'")}",
+    image: "${firstPhoto}",
+    bookedDates: []
+  },`;
+
+  navigator.clipboard.writeText(code).then(() => {
+    const toast = document.getElementById('toast');
+    toast.classList.remove('hidden');
+    setTimeout(() => toast.classList.add('hidden'), 3000);
+  }).catch(() => {
+    // Fallback if clipboard API not available
+    const ta = document.createElement('textarea');
+    ta.value = code;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    alert('Code copied! Paste it into the `properties` array in your nyumbacheck.html file, then redeploy to Cloudflare Pages.');
+  });
+}
+
+// ── Lightbox ─────────────────────────────────────────────────────
+function openLightbox(src) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.remove('hidden');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.add('hidden');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>
 </body>
 </html>
