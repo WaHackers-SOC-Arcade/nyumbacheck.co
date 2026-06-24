@@ -1,3 +1,13 @@
+
+name = "nyumbacheck-api"
+compatibility_date = "2026-06-24"
+
+# Change this line to point to your exact file:
+main = "worker.js" 
+
+[vars]
+ADMIN_TOKEN = "Manchester40#23"
+
 [[kv_namespaces]]
 binding = "NYUMBA_DB"
 id = "9cc0a6f1fe014b2e878c6803fea7b0ed"
