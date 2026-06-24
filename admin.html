@@ -163,74 +163,100 @@
 
 <script>
 // ── State ───────────────────────────────────────────────────────
-let WORKER   = '';
-let TOKEN    = '';
-let allData  = [];
+let WORKER  = '';
+let TOKEN   = '';
+let allData = [];
 let currentFilter = 'all';
 
-// ── Auth ────────────────────────────────────────────────────────
+// ── Login ────────────────────────────────────────────────────────
 async function login() {
-  TOKEN = document.getElementById('tokenInput').value.trim();
-  if (!TOKEN) return;
+  WORKER = document.getElementById('workerUrl').value.trim().replace(/\/$/, '');
+  TOKEN  = document.getElementById('tokenInput').value.trim();
 
-  // Try fetching listings to verify token
-sessionStorage.setItem('nc_token', TOKEN);
-  document.getElementById('loginScreen').classList.add('hidden');
-  document.getElementById('dashboard').classList.remove('hidden');
+  // Basic validation
+  if (!WORKER || !TOKEN) {
+    document.getElementById('loginError').innerText = 'Please enter both fields.';
+    document.getElementById('loginError').classList.remove('hidden');
+    return;
+  }
+
+  const errorEl = document.getElementById('loginError');
+  errorEl.classList.add('hidden');
+
+  try {
+    const res = await fetch(`${WORKER}/admin/listings?token=${TOKEN}`);
+
+    // Wrong token
+    if (res.status === 401) {
+      errorEl.innerText = 'Wrong token. Check your ADMIN_TOKEN in Cloudflare Variables.';
+      errorEl.classList.remove('hidden');
+      return;
     }
-    // Save to session
+
+    // Worker not reachable
+    if (!res.ok) {
+      errorEl.innerText = `Worker returned error ${res.status}. Check it is deployed.`;
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    // Success — save session and show dashboard
     sessionStorage.setItem('nc_worker', WORKER);
     sessionStorage.setItem('nc_token',  TOKEN);
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('dashboard').classList.remove('hidden');
+
     const data = await res.json();
-loadListings();
-}
-  
-async function loadListings() {
-  document.getElementById('loadingState').classList.remove('hidden');
-  document.getElementById('listingsGrid').classList.add('hidden');
-  document.getElementById('emptyState').classList.add('hidden');
-  
-  try {
-    // 🎯 Pointing to your new integrated database
-    const res = await fetch(`/api/properties`); 
-    const data = await res.json();
-    
- processListings(data || []); 
-    document.getElementById('last-refresh').innerText = new Date().toLocaleTimeString();
+    processListings(data.listings || []);
+
   } catch (err) {
-    alert('Failed to load listings. Check your Database connection.');
-    document.getElementById('loadingState').classList.add('hidden');
+    errorEl.innerText = 'Could not reach Worker. Check the URL is correct and the Worker is deployed.';
+    errorEl.classList.remove('hidden');
   }
 }
-// ── Auto-restore session ─────────────────────────────────────────
+
+// ── Auto-restore session on page load ───────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
   const w = sessionStorage.getItem('nc_worker');
   const t = sessionStorage.getItem('nc_token');
   if (w && t) {
-    WORKER = w; TOKEN = t;
-    document.getElementById('workerUrl').value   = w;
-    document.getElementById('tokenInput').value  = t;
+    WORKER = w;
+    TOKEN  = t;
+    document.getElementById('workerUrl').value  = w;
+    document.getElementById('tokenInput').value = t;
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('dashboard').classList.remove('hidden');
     loadListings();
   }
 });
 
-// ── Load listings ───────────────────────────────────────────────
+// ── Logout ───────────────────────────────────────────────────────
+function logout() {
+  sessionStorage.clear();
+  location.reload();
+}
+
+// ── Load listings from KV via Worker ────────────────────────────
 async function loadListings() {
   document.getElementById('loadingState').classList.remove('hidden');
   document.getElementById('listingsGrid').classList.add('hidden');
   document.getElementById('emptyState').classList.add('hidden');
+
   try {
+    // Always fetch from the Worker — never from /api/properties
     const res  = await fetch(`${WORKER}/admin/listings?token=${TOKEN}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     processListings(data.listings || []);
     document.getElementById('last-refresh').innerText = new Date().toLocaleTimeString();
   } catch (err) {
-    alert('Failed to load listings. Check your Worker is running.');
     document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('emptyState').classList.remove('hidden');
+    document.getElementById('emptyState').innerHTML = `
+      <p class="text-4xl mb-3">⚠️</p>
+      <p class="text-stone-600 font-bold">Could not load listings</p>
+      <p class="text-stone-400 text-sm mt-1">${err.message}</p>
+      <button onclick="loadListings()" class="mt-4 bg-brandRed text-white text-xs font-bold px-6 py-2 rounded-xl hover:bg-stone-900 transition">Try Again</button>`;
   }
 }
 
