@@ -1,8 +1,16 @@
-
+/**
+ * NyumbaCheck Cloudflare Worker — _worker.js
+ * ─────────────────────────────────────────────────────────────────
+ * KV binding: NYUMBA_DB  (set in wrangler.toml)
+ * Env variables to set in Cloudflare Dashboard → Worker → Settings → Variables:
+ *   ADMIN_TOKEN  = your secret password for admin panel
+ *   IMGBB_KEY    = your ImgBB API key (free at api.imgbb.com)
+ * ─────────────────────────────────────────────────────────────────
+ */
 
 const CORS = {
-  'Access-Control-Allow-Origin':  '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
 };
 
@@ -16,7 +24,6 @@ function json(data, status = 200) {
 export default {
   async fetch(request, env) {
 
-    // ── CORS preflight ────────────────────────────────────────────
     if (request.method === 'OPTIONS') {
       return new Response(null, { headers: CORS });
     }
@@ -24,39 +31,58 @@ export default {
     const url = new URL(request.url);
 
     // ══════════════════════════════════════════════════════════════
+    // GET /api/properties
+    // PUBLIC endpoint — returns all APPROVED listings.
+    // Your main website calls this on load so approved properties
+    // appear automatically without any copy-paste.
+    // ══════════════════════════════════════════════════════════════
+    if (url.pathname === '/api/properties' && request.method === 'GET') {
+      try {
+        const list    = await env.NYUMBA_DB.list({ prefix: 'listing_' });
+        const results = [];
+
+        for (const key of list.keys) {
+          const raw = await env.NYUMBA_DB.get(key.name);
+          if (!raw) continue;
+          const listing = JSON.parse(raw);
+          // Only return approved listings to the public
+          if (listing.status === 'approved') {
+            results.push(listing);
+          }
+        }
+
+        results.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+        return json({ properties: results, total: results.length });
+
+      } catch (err) {
+        return json({ error: 'Failed to fetch properties', detail: String(err) }, 500);
+      }
+    }
+
+    // ══════════════════════════════════════════════════════════════
     // POST /upload-photo
-    // Receives an image file, uploads it to ImgBB, returns the URL.
-    // The frontend sends one photo at a time as FormData.
+    // Uploads a single photo to ImgBB and returns the hosted URL.
+    // Frontend sends one file at a time as FormData { image: File }.
     // ══════════════════════════════════════════════════════════════
     if (url.pathname === '/upload-photo' && request.method === 'POST') {
       try {
-        const formData = await request.formData();
+        const formData  = await request.formData();
         const imageFile = formData.get('image');
 
-        if (!imageFile) {
-          return json({ error: 'No image file received' }, 400);
-        }
+        if (!imageFile) return json({ error: 'No image received' }, 400);
+        if (!env.IMGBB_KEY) return json({ error: 'IMGBB_KEY not configured in Worker variables' }, 500);
 
-        // Build FormData for ImgBB API
         const imgbbForm = new FormData();
         imgbbForm.append('key', env.IMGBB_KEY);
         imgbbForm.append('image', imageFile);
 
-        const imgbbRes = await fetch('https://api.imgbb.com/1/upload', {
-          method: 'POST',
-          body:   imgbbForm,
-        });
-
+        const imgbbRes  = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: imgbbForm });
         const imgbbData = await imgbbRes.json();
 
         if (imgbbData.success) {
-          return json({
-            url:       imgbbData.data.display_url,   // direct image URL
-            deleteUrl: imgbbData.data.delete_url,    // if you ever need to delete it
-          });
-        } else {
-          return json({ error: 'ImgBB upload failed', detail: imgbbData }, 500);
+          return json({ url: imgbbData.data.display_url, deleteUrl: imgbbData.data.delete_url });
         }
+        return json({ error: 'ImgBB upload failed', detail: imgbbData }, 500);
 
       } catch (err) {
         return json({ error: 'Photo upload error', detail: String(err) }, 500);
@@ -65,42 +91,38 @@ export default {
 
     // ══════════════════════════════════════════════════════════════
     // POST /submit-listing
-    // Saves a new property submission to KV with status "pending".
-    // You review it in the Cloudflare KV dashboard, then manually
-    // add approved properties to your website's properties array.
+    // Saves a seller's new property submission to KV as "pending".
+    // You review and approve it in admin.html — then it goes live
+    // automatically on your website (no copy-paste needed).
     // ══════════════════════════════════════════════════════════════
     if (url.pathname === '/submit-listing' && request.method === 'POST') {
       try {
         const data = await request.json();
 
-        // Validate required fields
         if (!data.name || !data.email || !data.city || !data.neighborhood) {
-          return json({ error: 'Missing required fields' }, 400);
+          return json({ error: 'Missing required fields: name, email, city, neighborhood' }, 400);
         }
 
-        // Generate a unique key for this listing
-        const id  = `listing_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-        const now = new Date().toISOString();
-
+        const id      = `listing_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
         const listing = {
           id,
-          status:      'pending',   // ← you change this to "approved" when ready
-          submittedAt: now,
-          name:        data.name,
-          email:       data.email,
-          city:        data.city,
+          status:       'pending',
+          submittedAt:  new Date().toISOString(),
+          name:         data.name,
+          email:        data.email,
+          city:         data.city,
           neighborhood: data.neighborhood,
-          type:        data.type,
-          beds:        data.beds,
-          price:       data.price,
-          description: data.description,
-          photos:      data.photos || [],   // array of ImgBB URLs
-          hasDeed:     data.hasDeed || false,
+          type:         data.type      || 'For Rent',
+          beds:         data.beds      || '—',
+          baths:        data.baths     || '—',
+          priceTZS:     data.priceTZS  || data.price || '',
+          priceUSD:     data.priceUSD  || '',
+          description:  data.description || '',
+          photos:       data.photos    || [],
+          hasDeed:      data.hasDeed   || false,
         };
 
-        // Save to KV
-        await env.LISTINGS.put(id, JSON.stringify(listing));
-
+        await env.NYUMBA_DB.put(id, JSON.stringify(listing));
         return json({ success: true, id });
 
       } catch (err) {
@@ -109,46 +131,37 @@ export default {
     }
 
     // ══════════════════════════════════════════════════════════════
-    // GET /admin/listings
-    // Returns all pending listings so you can review them.
-    // Protected by a simple secret token — add ADMIN_TOKEN as a
-    // Worker environment variable.
-    //
-    // Usage: GET /admin/listings?token=YOUR_SECRET_TOKEN
+    // GET /admin/listings?token=XXX
+    // Returns ALL listings (pending + approved + rejected).
+    // Protected — only you can access this with your ADMIN_TOKEN.
     // ══════════════════════════════════════════════════════════════
     if (url.pathname === '/admin/listings' && request.method === 'GET') {
       const token = url.searchParams.get('token');
-
       if (!env.ADMIN_TOKEN || token !== env.ADMIN_TOKEN) {
         return json({ error: 'Unauthorized' }, 401);
       }
-
       try {
-        // List all keys in the LISTINGS namespace
-        const list = await env.LISTINGS.list();
+        const list    = await env.NYUMBA_DB.list({ prefix: 'listing_' });
         const results = [];
 
         for (const key of list.keys) {
-          const value = await env.LISTINGS.get(key.name);
-          if (value) {
-            results.push(JSON.parse(value));
-          }
+          const raw = await env.NYUMBA_DB.get(key.name);
+          if (raw) results.push(JSON.parse(raw));
         }
 
-        // Sort newest first
         results.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
-
         return json({ listings: results, total: results.length });
 
       } catch (err) {
-        return json({ error: 'Failed to retrieve listings', detail: String(err) }, 500);
+        return json({ error: 'Failed to fetch listings', detail: String(err) }, 500);
       }
     }
 
     // ══════════════════════════════════════════════════════════════
-    // PATCH /admin/update-listing
-    // Updates the status of a listing (pending → approved / rejected)
-    // Usage: PATCH /admin/update-listing?token=YOUR_TOKEN
+    // PATCH /admin/update-listing?token=XXX
+    // Updates status of a listing: pending → approved / rejected.
+    // When you approve, the listing automatically appears on the
+    // public /api/properties endpoint and shows on the website.
     // Body: { "id": "listing_xxx", "status": "approved" }
     // ══════════════════════════════════════════════════════════════
     if (url.pathname === '/admin/update-listing' && request.method === 'PATCH') {
@@ -158,20 +171,23 @@ export default {
       }
       try {
         const { id, status } = await request.json();
-        const existing = await env.LISTINGS.get(id);
+        if (!id || !status) return json({ error: 'Missing id or status' }, 400);
+
+        const existing = await env.NYUMBA_DB.get(id);
         if (!existing) return json({ error: 'Listing not found' }, 404);
-        const listing = JSON.parse(existing);
+
+        const listing     = JSON.parse(existing);
         listing.status    = status;
         listing.updatedAt = new Date().toISOString();
-        await env.LISTINGS.put(id, JSON.stringify(listing));
+
+        await env.NYUMBA_DB.put(id, JSON.stringify(listing));
         return json({ success: true, id, status });
+
       } catch (err) {
         return json({ error: 'Update error', detail: String(err) }, 500);
       }
     }
 
-    // ── 404 ───────────────────────────────────────────────────────
     return json({ error: 'Not found' }, 404);
   },
 };
-       
