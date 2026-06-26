@@ -38,6 +38,8 @@
     .tab-active { border-bottom:3px solid #4A1521; color:#4A1521; font-weight:700; }
     .tab-inactive { border-bottom:3px solid transparent; color:#78716c; }
     .scroll-hide::-webkit-scrollbar { display:none; }
+    .faq-answer { transition: all 0.2s ease; }
+    svg.rotate { transform: rotate(180deg); }
   </style>
 </head>
 <body class="bg-luxuryIvory text-slate-900 font-sans antialiased">
@@ -47,16 +49,19 @@
      ================================================ -->
 <script>
   const CONFIG = {
-    whatsapp: '255791692360',        // Update this
-    email:    'nyumbachecktz@yahoo.com',
-    instagram: '@nyumbacheck1',
-    commission: 0.10  };           // ← your commission rate (10%)
+    whatsapp:   '255791692360',
+    email:      'nyumbachecktz@yahoo.com',
+    instagram:  '@nyumbacheck1',
+    commission:  0.10,
+    selcomLink: 'https://YOUR-SELCOM-PAY-BY-LINK-HERE',   // ← paste your Selcom Pay by Link URL here when ready
+    workerUrl:  'https://nyumbacheck-api.jilliandeo040.workers.dev'
+  };
 </script>
 
 <!-- ======================== FLOATING BUTTONS ======================== -->
 <!-- WhatsApp -->
 <a id="wa-float"
-   href=""[https://wa.me/255791692360](https://wa.me/255791692360)"" target="_blank"
+   href="#" target="_blank"
    class="fixed bottom-24 right-5 z-[200] bg-[#25D366] hover:bg-[#1da851] text-white rounded-full w-14 h-14 flex items-center justify-center shadow-2xl transition-transform hover:scale-110"
    title="WhatsApp">
   <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
@@ -148,10 +153,52 @@
 <!-- ======================== FILTER ======================== -->
 <section class="max-w-5xl mx-auto -mt-10 relative z-20 px-4">
   <div class="bg-white rounded-2xl shadow-xl border border-stone-100 p-4 grid grid-cols-2 md:grid-cols-4 gap-3">
-    <select id="filterCity" class="col-span-2 md:col-span-1 w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandGreen outline-none transition">
-      <option value="All">All Cities</option>
-      <option value="Dar es Salaam">Dar es Salaam</option>
-      <option value="Zanzibar">Zanzibar</option>
+    <select id="filterCity" onchange="updateLocations()" class="col-span-2 md:col-span-1 w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandGreen outline-none transition">
+      <option value="All">All Regions</option>
+      <optgroup label="Dar es Salaam">
+        <option value="Dar es Salaam">Dar es Salaam</option>
+      </optgroup>
+      <optgroup label="Zanzibar">
+        <option value="Zanzibar Unguja">Zanzibar (Unguja)</option>
+        <option value="Zanzibar Pemba">Zanzibar (Pemba)</option>
+      </optgroup>
+      <optgroup label="Northern Tanzania">
+        <option value="Arusha">Arusha</option>
+        <option value="Kilimanjaro">Kilimanjaro</option>
+        <option value="Manyara">Manyara</option>
+        <option value="Tanga">Tanga</option>
+      </optgroup>
+      <optgroup label="Central Tanzania">
+        <option value="Dodoma">Dodoma</option>
+        <option value="Singida">Singida</option>
+        <option value="Tabora">Tabora</option>
+      </optgroup>
+      <optgroup label="Lake Zone">
+        <option value="Mwanza">Mwanza</option>
+        <option value="Kagera">Kagera</option>
+        <option value="Geita">Geita</option>
+        <option value="Simiyu">Simiyu</option>
+        <option value="Shinyanga">Shinyanga</option>
+        <option value="Mara">Mara</option>
+        <option value="Kigoma">Kigoma</option>
+      </optgroup>
+      <optgroup label="Eastern Tanzania">
+        <option value="Morogoro">Morogoro</option>
+        <option value="Pwani">Pwani (Coast)</option>
+      </optgroup>
+      <optgroup label="Southern Highlands">
+        <option value="Iringa">Iringa</option>
+        <option value="Mbeya">Mbeya</option>
+        <option value="Njombe">Njombe</option>
+        <option value="Songwe">Songwe</option>
+        <option value="Rukwa">Rukwa</option>
+        <option value="Katavi">Katavi</option>
+        <option value="Ruvuma">Ruvuma</option>
+      </optgroup>
+      <optgroup label="Southern Tanzania">
+        <option value="Lindi">Lindi</option>
+        <option value="Mtwara">Mtwara</option>
+      </optgroup>
     </select>
     <select id="filterType" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandGreen outline-none transition">
       <option value="All">Rent or Sale</option>
@@ -160,15 +207,6 @@
     </select>
     <select id="filterLocation" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandGreen outline-none transition">
       <option value="All">All Neighborhoods</option>
-      <optgroup label="Dar es Salaam">
-        <option>Masaki</option><option>Oyster Bay</option><option>Msasani</option>
-        <option>Mikocheni</option><option>Mbezi Beach</option><option>Kigamboni</option>
-        <option>Ada Estate</option><option>Kawe</option><option>Sinza</option><option>Kinondoni</option>
-      </optgroup>
-      <optgroup label="Zanzibar">
-        <option>Stone Town</option><option>Nungwi</option><option>Kendwa</option>
-        <option>Paje</option><option>Jambiani</option><option>Matemwe</option><option>Kizimkazi</option>
-      </optgroup>
     </select>
     <button id="searchBtn" class="w-full bg-brandRed text-white font-bold py-3 rounded-xl hover:bg-stone-900 transition shadow-md text-sm">Search</button>
   </div>
@@ -339,9 +377,15 @@
         <textarea id="ls-description" required rows="3" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandGreen outline-none resize-none" placeholder="Describe your property: size, amenities, security features, water/power supply..."></textarea>
       </div>
       <div>
-        <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-1">Photos (Google Drive or Dropbox link)</label>
-        <input type="url" id="ls-photos" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandGreen outline-none" placeholder="https://drive.google.com/...">
-        <p class="text-[10px] text-stone-400 mt-1">Upload your photos to Google Drive, set to "Anyone with link can view", then paste the link here.</p>
+        <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-1">Property Photos (up to 10 images)</label>
+        <div class="border-2 border-dashed border-stone-300 rounded-xl p-6 text-center hover:border-brandGreen transition cursor-pointer bg-white" onclick="document.getElementById('ls-photos-file').click()">
+          <svg class="w-8 h-8 text-stone-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <p class="text-sm text-stone-500 font-medium">Click to select photos</p>
+          <p class="text-[10px] text-stone-400 mt-1">JPG, PNG or WEBP — max 5MB each</p>
+        </div>
+        <input type="file" id="ls-photos-file" multiple accept="image/*" class="hidden" onchange="previewPhotos(this)">
+        <div id="photo-preview" class="flex flex-wrap gap-2 mt-3 hidden"></div>
+        <p id="photo-count" class="text-[10px] text-brandGreen font-bold mt-1 hidden"></p>
       </div>
       <div class="flex items-start gap-3 p-4 bg-brandGreen/10 rounded-xl border border-brandGreen/30">
         <input type="checkbox" id="ls-deed" class="mt-0.5 accent-brandGreen">
@@ -651,13 +695,63 @@ function render(list) {
   `).join('');
 }
 
+// ── All Tanzania & Zanzibar Locations ─────────────────────────
+const regionLocations = {
+  'All': [],
+  'Dar es Salaam': ['Masaki','Oyster Bay','Msasani','Mikocheni','Mbezi Beach','Kigamboni','Ada Estate','Kawe','Sinza','Kinondoni','Ilala','Temeke','Ubungo','Mwananyamala','Tabata','Gongo la Mboto','Bunju','Tegeta','Salasala','Kimara','Ukonga','Makuburi','Kunduchi','Wazo Hill'],
+  'Zanzibar Unguja': ['Stone Town','Nungwi','Kendwa','Paje','Jambiani','Matemwe','Kizimkazi','Bwejuu','Chwaka','Uroa','Dongwe','Pwani Mchangani','Mangapwani','Fumba','Bububu','Mahonda','Mkokotoni','Donge','Chaani','Fuoni','Tunguu','Mwera'],
+  'Zanzibar Pemba': ['Chake Chake','Wete','Mkoani','Micheweni','Konde','Tibirinzi','Ziwani','Shamiani'],
+  'Arusha': ['Arusha City Centre','Njiro','Sakina','Kijenge','Themi','Ngarenaro','Sokon','Kimandolu','Engutoto','Kaloleni','Lemara','Baraa','Sekei','Unga Limited','Moshono','Karatu','Monduli','Longido','Ngorongoro'],
+  'Kilimanjaro': ['Moshi Town','Shantytown','Majengo','Rau','Mweka','Mbokomu','Himo','Marangu','Same','Rombo','Hai','Mwanga','Siha'],
+  'Manyara': ['Babati','Mbulu','Hanang','Kiteto','Simanjiro','Karatu'],
+  'Tanga': ['Tanga City','Nguvumali','Usagara','Mzingani','Makorora','Muheza','Pangani','Mkinga','Kilindi','Korogwe','Handeni','Lushoto','Kilosa'],
+  'Dodoma': ['Dodoma City','Makole','Nala','Kikuyu','Chamwino','Veyula','Bahi','Chemba','Kondoa','Kongwa','Mpwapwa'],
+  'Singida': ['Singida Town','Manyoni','Iramba','Ikungi','Mkalama'],
+  'Tabora': ['Tabora Town','Ipuli','Tumbi','Sikonge','Uyui','Nzega','Igunga','Kaliua','Urambo'],
+  'Mwanza': ['Mwanza City','Ilemela','Nyamagana','Mabatini','Buzuruga','Igoma','Geita Town','Misungwi','Magu','Kwimba','Sengerema','Ukerewe','Buchosa'],
+  'Kagera': ['Bukoba','Muleba','Biharamulo','Chato','Karagwe','Kyerwa','Ngara','Missenyi'],
+  'Geita': ['Geita Town','Chato','Nyang\'hwale','Mbogwe','Bukombe'],
+  'Simiyu': ['Bariadi','Busega','Itilima','Maswa','Meatu'],
+  'Shinyanga': ['Shinyanga Town','Kahama','Kishapu','Msalala','Ushetu'],
+  'Mara': ['Musoma','Butiama','Bunda','Serengeti','Tarime','Rorya'],
+  'Kigoma': ['Kigoma Town','Ujiji','Kasulu','Kibondo','Kakonko','Buhigwe','Uvinza'],
+  'Morogoro': ['Morogoro Town','Mzumbe','Bigwa','Mazimbu','Kihonda','Kilosa','Mvomero','Ulanga','Kilombero','Malinyi','Gairo','Ifakara'],
+  'Pwani': ['Bagamoyo','Kibaha','Kisarawe','Mkuranga','Mafia Island','Rufiji','Kibiti','Ikwiriri','Chalinze'],
+  'Iringa': ['Iringa Town','Mafinga','Udekwa','Kilolo','Mufindi','Mtera','Ruaha'],
+  'Mbeya': ['Mbeya City','Uyole','Mwanjelwa','Tukuyu','Rungwe','Kyela','Busokelo','Chunya','Mbarali','Momba'],
+  'Njombe': ['Njombe Town','Makete','Ludewa','Wanging\'ombe'],
+  'Songwe': ['Vwawa','Tunduma','Mbozi','Momba','Ileje','Songwe Town'],
+  'Rukwa': ['Sumbawanga','Nkasi','Kalambo','Sumbawanga Rural'],
+  'Katavi': ['Mpanda','Mlele','Nsimbo','Tanganyika'],
+  'Ruvuma': ['Songea','Mbinga','Namtumbo','Nyasa','Madaba','Tunduru','Mtama'],
+  'Lindi': ['Lindi Town','Kilwa','Liwale','Nachingwea','Ruangwa','Mtama'],
+  'Mtwara': ['Mtwara Town','Mikindani','Masasi','Newala','Nanyamba','Tandahimba','Nanyumbu']
+};
+
+function updateLocations() {
+  const city   = document.getElementById('filterCity').value;
+  const select = document.getElementById('filterLocation');
+  const locs   = regionLocations[city] || [];
+  select.innerHTML = '<option value="All">All Neighborhoods</option>';
+  locs.forEach(loc => {
+    const opt = document.createElement('option');
+    opt.value = opt.textContent = loc;
+    select.appendChild(opt);
+  });
+}
+
 // ── Filter ─────────────────────────────────────────────────────
 document.getElementById('searchBtn').addEventListener('click', () => {
   const city = document.getElementById('filterCity').value;
   const type = document.getElementById('filterType').value;
   const loc  = document.getElementById('filterLocation').value;
   let f = properties;
-  if (city !== 'All') f = f.filter(p => p.city === city);
+  // For Zanzibar sub-regions, match on city field "Zanzibar"
+  if (city === 'Zanzibar Unguja' || city === 'Zanzibar Pemba') {
+    f = f.filter(p => p.city === 'Zanzibar');
+  } else if (city !== 'All') {
+    f = f.filter(p => p.city === city);
+  }
   if (type !== 'All') f = f.filter(p => p.type === type);
   if (loc  !== 'All') f = f.filter(p => p.neighborhood === loc);
   render(f);
@@ -776,45 +870,148 @@ function submitBooking() {
   const name  = document.getElementById('bk-name').value.trim();
   const email = document.getElementById('bk-email').value.trim();
   if (!name || !email) { alert('Please enter your name and email.'); return; }
+
   const dates = selectedCheckIn
     ? `${selectedCheckIn}${selectedCheckOut ? ' to ' + selectedCheckOut : ''}`
     : 'dates to be confirmed';
+
+  // Step 1 — WhatsApp notification to NyumbaCheck
   const msg = encodeURIComponent(
-    `Booking Request via NyumbaCheck\n\n` +
+    `🏠 BOOKING REQUEST via NyumbaCheck\n\n` +
     `Property: ${activeProperty.title}\nLocation: ${activeProperty.neighborhood}, ${activeProperty.city}\n` +
-    `Price: TZS ${fmt(activeProperty.price)}\nRequested dates: ${dates}\n\n` +
-    `Buyer: ${name}\nEmail: ${email}\n\nPlease send me a secure payment link.`
+    `Price: TZS ${fmt(activeProperty.price)}\nDates: ${dates}\n\n` +
+    `Buyer name: ${name}\nBuyer email: ${email}\n\n` +
+    `Please confirm availability and send the payment link.`
   );
   window.open(`https://wa.me/${CONFIG.whatsapp}?text=${msg}`, '_blank');
+
   closeModal('bookingModal');
-  showNotice('Booking Request Sent ✓', 'NyumbaCheck received your request. We will WhatsApp you a secure payment link shortly. Check your messages!');
+
+  // Step 2 — Show payment options to buyer
+  // Check if a real Selcom link has been configured
+  const hasSelcomLink = CONFIG.selcomLink && !CONFIG.selcomLink.includes('YOUR-SELCOM');
+
+  if (hasSelcomLink) {
+    // Show a payment modal with the Selcom link
+    document.getElementById('notice-title').innerText   = 'Booking Request Sent ✓';
+    document.getElementById('notice-message').innerText =
+      `We received your request for ${activeProperty.title}. ` +
+      `You can pay now using the button below, or wait for NyumbaCheck to WhatsApp you a link. ` +
+      `Please include "${activeProperty.title} — ${dates}" as your payment reference.`;
+    // Swap the close button for two options
+    const noticeBtn = document.querySelector('#noticeModal button');
+    noticeBtn.outerHTML = `
+      <div class="flex flex-col gap-2">
+        <a href="${CONFIG.selcomLink}" target="_blank"
+           onclick="setTimeout(()=>closeModal('noticeModal'),300)"
+           class="w-full block text-center bg-brandGreen text-white font-bold py-3 rounded-xl hover:bg-brandRed transition text-sm">
+          Pay Now via Selcom
+        </a>
+        <button onclick="closeModal('noticeModal');location.reload()" class="w-full bg-stone-100 text-stone-700 font-bold py-3 rounded-xl hover:bg-stone-200 transition text-sm">
+          I'll wait for the WhatsApp link
+        </button>
+      </div>`;
+    openModal('noticeModal');
+  } else {
+    showNotice(
+      'Booking Request Sent ✓',
+      `NyumbaCheck received your booking request for ${activeProperty.title}. ` +
+      `We will WhatsApp you a secure payment link within a few hours. ` +
+      `Reference: ${activeProperty.title} — ${dates}.`
+    );
+  }
 }
 
-// ── Seller Listing Form ─────────────────────────────────────────
-document.getElementById('listingForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const name   = document.getElementById('ls-name').value;
-  const email  = document.getElementById('ls-email').value;
-  const city   = document.getElementById('ls-city').value;
-  const hood   = document.getElementById('ls-neighborhood').value;
-  const type   = document.getElementById('ls-type').value;
-  const beds   = document.getElementById('ls-beds').value;
-  const price  = document.getElementById('ls-price').value;
-  const desc   = document.getElementById('ls-description').value;
-  const photos = document.getElementById('ls-photos').value;
-  const deed   = document.getElementById('ls-deed').checked;
+// ── Seller Listing Form — sends to Cloudflare Worker → KV ───────
+function previewPhotos(input) {
+  const preview = document.getElementById('photo-preview');
+  const count   = document.getElementById('photo-count');
+  preview.innerHTML = '';
+  if (!input.files.length) { preview.classList.add('hidden'); count.classList.add('hidden'); return; }
+  preview.classList.remove('hidden');
+  count.classList.remove('hidden');
+  count.innerText = `${input.files.length} photo${input.files.length > 1 ? 's' : ''} selected`;
+  Array.from(input.files).slice(0, 10).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.className = 'w-20 h-20 object-cover rounded-xl border-2 border-brandGreen/30';
+      preview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
-  const subject = encodeURIComponent(`New Property Listing Submission — ${city}, ${hood}`);
-  const body    = encodeURIComponent(
-    `New Property Listing via NyumbaCheck\n\n` +
-    `Seller: ${name}\nEmail: ${email}\n\n` +
-    `Location: ${hood}, ${city}\nType: ${type}\nBedrooms: ${beds}\nPrice: TZS ${price}\n\n` +
-    `Description:\n${desc}\n\nPhotos: ${photos || 'Not provided'}\n` +
-    `Title Deed Available: ${deed ? 'YES ✓' : 'NO'}\n\n---\nSubmitted via NyumbaCheck website.`
-  );
-  window.location.href = `mailto:${CONFIG.email}?subject=${subject}&body=${body}`;
-  showNotice('Submission Received ✓', 'Thank you! Your property details have been sent to NyumbaCheck. Our team will contact you within 24 hours to schedule your free verification audit.');
-  this.reset();
+document.getElementById('listingForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = this.querySelector('button[type="submit"]');
+  const originalText = btn.innerHTML;
+
+  btn.innerHTML = `<span class="animate-pulse">⏳ Uploading photos...</span>`;
+  btn.disabled = true;
+
+  try {
+    // Upload photos to Worker → ImgBB
+    const fileInput = document.getElementById('ls-photos-file');
+    const photoUrls = [];
+
+    if (fileInput && fileInput.files.length > 0) {
+      for (const file of Array.from(fileInput.files).slice(0, 10)) {
+        const fd = new FormData();
+        fd.append('image', file);
+        try {
+          const res  = await fetch(`${CONFIG.workerUrl}/upload-photo`, { method: 'POST', body: fd });
+          const data = await res.json();
+          if (data.url) photoUrls.push(data.url);
+        } catch (err) { console.warn('Photo upload failed:', err); }
+      }
+    }
+
+    btn.innerHTML = `<span class="animate-pulse">⏳ Submitting listing...</span>`;
+
+    // Submit listing to Worker → KV
+    const res = await fetch(`${CONFIG.workerUrl}/submit-listing`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name:         document.getElementById('ls-name').value.trim(),
+        email:        document.getElementById('ls-email').value.trim(),
+        city:         document.getElementById('ls-city').value,
+        neighborhood: document.getElementById('ls-neighborhood').value.trim(),
+        type:         document.getElementById('ls-type').value,
+        beds:         document.getElementById('ls-beds').value,
+        priceTZS:     document.getElementById('ls-price').value.trim(),
+        priceUSD:     document.getElementById('ls-price-usd') ? document.getElementById('ls-price-usd').value.trim() : '',
+        description:  document.getElementById('ls-description').value.trim(),
+        photos:       photoUrls,
+        hasDeed:      document.getElementById('ls-deed').checked,
+      })
+    });
+
+    const result = await res.json();
+
+    if (result.success) {
+      showNotice(
+        'Submission Received ✓',
+        'Thank you! Your property has been submitted for verification. Our team will contact you within 24 hours.'
+      );
+      this.reset();
+      if (document.getElementById('photo-preview')) {
+        document.getElementById('photo-preview').classList.add('hidden');
+        document.getElementById('photo-count').classList.add('hidden');
+      }
+    } else {
+      showNotice('Error', result.error || 'Submission failed. Please try again or email us directly.');
+    }
+
+  } catch (err) {
+    // If Worker unreachable, show error — no mailto popup
+    showNotice('Connection Error', 'Could not reach NyumbaCheck servers. Please email us at ' + CONFIG.email + ' with your property details.');
+  } finally {
+    btn.innerHTML = originalText;
+    btn.disabled  = false;
+  }
 });
 
 // ── How It Works Tabs ───────────────────────────────────────────
@@ -825,55 +1022,102 @@ function switchTab(tab) {
   document.getElementById('tab-seller').className = 'pb-3 text-sm font-bold tracking-wide transition ' + (tab === 'seller' ? 'tab-active' : 'tab-inactive');
 }
 
-// ── Articles ────────────────────────────────────────────────────
+// ── Articles with full content + FAQs ─────────────────────────
 const articles = [
   {
     title: "How to Rent a Safe Apartment in Dar es Salaam in 2025",
+    tag: "Tenant Guide",
+    faqs: [
+      { q: "How long does the NyumbaCheck verification process take?", a: "Our ground team typically completes a full property verification — including physical inspection and title deed cross-check — within 3 to 5 business days. You will receive a verification report before any listing goes live on our platform." },
+      { q: "Do I need to pay anything to view a property on NyumbaCheck?", a: "No. Viewing properties and contacting hosts through NyumbaCheck is completely free for tenants and buyers. You only pay when you decide to proceed with a booking, and that payment is managed securely through NyumbaCheck." },
+      { q: "What documents should a legitimate landlord provide?", a: "A legitimate landlord should provide: (1) the original Certificate of Title or Right of Occupancy, (2) their national ID or passport matching the name on the title deed, (3) a copy of their utility bill for the property. If any of these are missing or inconsistent, do not pay." },
+      { q: "Can I verify a property myself without NyumbaCheck?", a: "Yes — you can visit Ardhi House in Kivukoni Front, Dar es Salaam, with the plot number and cross-reference it with the Land Registry. However, this process can take days and requires knowledge of the system. NyumbaCheck does this for you so every listing is already cleared before you see it." },
+      { q: "What if I encounter a scam listing that is NOT on NyumbaCheck?", a: "Report it to us via WhatsApp or email — we document scam listings and work with local authorities where possible. You can also report directly to the Tanzania Police Force Cybercrime Unit or the Ministry of Lands." }
+    ],
     content: `<h4 class="font-bold text-stone-900 mb-3">The Problem: Rental Scams Are Everywhere in DSM</h4>
-    <p class="mb-4">Dar es Salaam's rental market is growing fast — and so are the scams. Fake listings, phantom landlords, and unregistered agents (dalali) cost Tanzanian renters hundreds of millions of shillings every year. High-demand neighborhoods like Masaki, Oyster Bay, and Mbezi Beach are the worst affected, because they attract both local professionals and diaspora buyers who may not have someone on the ground.</p>
+    <p class="mb-4">Dar es Salaam's rental market is growing fast — and so are the scams. Fake listings, phantom landlords, and unregistered agents (dalali) cost Tanzanian renters hundreds of millions of shillings every year. High-demand neighborhoods like Masaki, Oyster Bay, and Mbezi Beach are worst affected because they attract local professionals and diaspora buyers who may not have someone on the ground.</p>
     <h4 class="font-bold text-stone-900 mb-3">Step 1: Never Pay a Deposit Without a Viewing</h4>
-    <p class="mb-4">This is the golden rule. A legitimate landlord will always allow a physical viewing before any money changes hands. If anyone asks for a "reservation deposit" before you've seen the property in person, that is a red flag. Walk away.</p>
+    <p class="mb-4">This is the golden rule. A legitimate landlord will always allow a physical viewing before any money changes hands. If anyone asks for a "reservation deposit" before you have seen the property in person, that is a red flag. Walk away immediately.</p>
     <h4 class="font-bold text-stone-900 mb-3">Step 2: Demand to See the Title Deed</h4>
-    <p class="mb-4">A valid property in Tanzania has a Certificate of Title or Right of Occupancy issued by the Ministry of Lands. Ask the landlord to show you the original document. Cross-reference the plot number with the Land Registry in Ardhi House, Kivukoni Front, Dar es Salaam. If they refuse, that is a serious warning sign.</p>
+    <p class="mb-4">A valid property in Tanzania has a Certificate of Title or Right of Occupancy issued by the Ministry of Lands. Ask the landlord to show you the original document. Cross-reference the plot number with the Land Registry in Ardhi House, Kivukoni Front. If they refuse, that is a serious warning sign.</p>
     <h4 class="font-bold text-stone-900 mb-3">Step 3: Verify the Agent's Identity</h4>
-    <p class="mb-4">All legitimate real estate agents in Tanzania must be registered with the Ministry of Lands. Ask for their registration number. You can verify this directly with the ministry. Unregistered dalalis have no accountability if the deal goes wrong.</p>
-    <h4 class="font-bold text-stone-900 mb-3">Step 4: Use a Verified Platform</h4>
-    <p class="mb-4">This is where NyumbaCheck comes in. Every property on our platform has been physically inspected by our ground team, the title deed has been cross-checked with the Land Registry, and the identity of the host has been verified. You are not trusting a photo — you are trusting a process.</p>
-    <p class="font-bold text-brandRed">Browse our verified listings above to find a safe rental in Dar es Salaam today.</p>`
+    <p class="mb-4">All legitimate real estate agents in Tanzania must be registered with the Ministry of Lands. Ask for their registration number. Unregistered dalalis have no legal accountability if the deal goes wrong — and most scams involve unregistered agents.</p>
+    <h4 class="font-bold text-stone-900 mb-3">Step 4: Use NyumbaCheck</h4>
+    <p class="mb-6">Every property on our platform has been physically inspected, the title deed cross-checked with the Land Registry, and the host identity verified. You are not trusting a photo — you are trusting a process.</p>`
   },
   {
     title: "Best Neighborhoods in Zanzibar for Long-Term Rentals",
+    tag: "Zanzibar Guide",
+    faqs: [
+      { q: "Can foreigners rent property in Zanzibar long-term?", a: "Yes. Foreigners and diaspora Tanzanians can legally rent property in Zanzibar for long-term stays. However, for stays longer than 90 days, a Residence Permit Class C (for investors) or Class B (for employed persons) may be required. NyumbaCheck can guide you through the documentation requirements." },
+      { q: "Is internet connectivity reliable enough in Zanzibar for remote work?", a: "Connectivity has improved significantly. Stone Town, Nungwi, Paje, and Kendwa all have reliable 4G coverage from Vodacom, Airtel, and Tigo. Most premium properties include fibre or VDSL connections. Paje in particular has become a hub for digital nomads due to its stable connectivity." },
+      { q: "What is the average cost of long-term rental in Zanzibar vs Dar es Salaam?", a: "Zanzibar is generally 20–40% more expensive than equivalent properties in Dar es Salaam due to tourism demand. A basic 2-bedroom apartment in Stone Town runs TZS 800,000–1,500,000/month. Beachfront properties in Nungwi or Kendwa can reach TZS 3,000,000–6,000,000/month." },
+      { q: "Do I need a special permit to stay in Zanzibar long-term?", a: "Tanzanian citizens do not need any special permit to live in Zanzibar. For non-citizens, a residency permit is required for stays beyond the standard tourist visa period (90 days for most nationalities). The Zanzibar Investment Promotion Authority (ZIPA) handles applications." },
+      { q: "Which Zanzibar neighborhood is best for families?", a: "Stone Town is ideal for families who want access to schools and amenities. Matemwe and Pwani Mchangani offer quiet, community-oriented environments with more space. Paje and Jambiani are excellent for families who enjoy outdoor lifestyles. All NyumbaCheck Zanzibar listings are verified for safety and habitability." }
+    ],
     content: `<h4 class="font-bold text-stone-900 mb-3">Why Zanzibar Is Attracting Long-Term Renters</h4>
-    <p class="mb-4">Zanzibar is no longer just a holiday destination. With remote work growing globally, digital nomads, investors, and Tanzanian diaspora returning home are choosing Zanzibar for long-term stays. The island's low cost of living relative to its quality of life, combined with improving internet infrastructure, makes it one of East Africa's most attractive residential markets.</p>
-    <h4 class="font-bold text-stone-900 mb-3">Stone Town — Heritage & Culture</h4>
-    <p class="mb-4">Stone Town is Zanzibar's beating heart — a UNESCO World Heritage Site with narrow winding streets, carved Omani doors, and rooftop terraces overlooking the Indian Ocean. It is ideal for those who want to be at the center of island life, within walking distance of restaurants, the harbor, and the local market. Prices are moderate, and heritage apartments can be found for TZS 800,000–1,500,000/month.</p>
-    <h4 class="font-bold text-stone-900 mb-3">Nungwi — Beach Luxury</h4>
-    <p class="mb-4">Nungwi is the premium end of the Zanzibar rental market. Located at the northern tip of the island, it offers white sand beaches, calm clear water, and a thriving international tourist and expat community. Long-term rental prices start at TZS 2,500,000/month and can reach TZS 6,000,000+ for beachfront villas. Ideal for investors running short-term holiday lets.</p>
-    <h4 class="font-bold text-stone-900 mb-3">Paje — The Kite-Surfing Capital</h4>
-    <p class="mb-4">Paje on the southeast coast is a favorite of the kite-surfing and wellness community. More relaxed than Nungwi, with a bohemian atmosphere and strong internet connectivity. Great for digital nomads and medium-term renters. Prices range from TZS 1,500,000–3,000,000/month.</p>
-    <h4 class="font-bold text-stone-900 mb-3">Kendwa — Quiet Luxury</h4>
-    <p class="mb-4">Kendwa sits just south of Nungwi and offers a quieter, more residential atmosphere while still being close to the northern beaches. It is increasingly attractive for diaspora investors looking to purchase rather than rent, with freehold cottages available at competitive prices.</p>
-    <p class="font-bold text-brandRed">Browse our verified Zanzibar listings above — all title deeds checked, all properties physically inspected.</p>`
+    <p class="mb-4">Zanzibar is no longer just a holiday destination. With remote work growing globally, digital nomads, investors, and Tanzanian diaspora are choosing Zanzibar for long-term stays. The island's low cost of living relative to its quality of life, combined with improving internet infrastructure, makes it one of East Africa's most attractive residential markets.</p>
+    <h4 class="font-bold text-stone-900 mb-3">Stone Town — UNESCO Heritage & Culture</h4>
+    <p class="mb-4">Stone Town is Zanzibar's beating heart — a UNESCO World Heritage Site with narrow winding streets, carved Omani doors, and rooftop terraces overlooking the Indian Ocean. Walking distance to restaurants, the harbor, and local markets. Prices: TZS 800,000–1,500,000/month for a well-maintained apartment.</p>
+    <h4 class="font-bold text-stone-900 mb-3">Nungwi — Beachfront Luxury</h4>
+    <p class="mb-4">At the northern tip of the island, Nungwi offers white sand, calm turquoise water, and a thriving international expat community. Long-term rental prices start at TZS 2,500,000/month and can reach TZS 6,000,000+ for beachfront villas. Best for investors running holiday lets.</p>
+    <h4 class="font-bold text-stone-900 mb-3">Paje — Kite-Surfing & Digital Nomads</h4>
+    <p class="mb-4">Paje on the southeast coast is a favorite of the kite-surfing and wellness community. Bohemian atmosphere, strong internet, and a laid-back lifestyle. Prices: TZS 1,500,000–3,000,000/month. The fastest-growing rental market on the island.</p>
+    <h4 class="font-bold text-stone-900 mb-3">Kendwa — Quiet Luxury for Investors</h4>
+    <p class="mb-6">Just south of Nungwi, Kendwa is quieter and more residential. Increasingly attractive for diaspora investors looking to purchase — freehold cottages are still available at competitive prices compared to Nungwi.</p>`
   },
   {
     title: "How Tanzanians Abroad Can Safely Buy Property Back Home",
+    tag: "Diaspora Investor Guide",
+    faqs: [
+      { q: "Can Tanzanians living abroad own land in Tanzania?", a: "Yes. Tanzanian citizens living abroad retain full rights to purchase and own property under a Right of Occupancy or residential lease. You do not lose these rights by living overseas. What is restricted is foreign nationals (non-citizens) owning land — but Tanzanian passport holders are fully entitled to buy." },
+      { q: "How do I safely send money to pay for property from overseas?", a: "Use regulated bank transfers or licensed remittance services (such as Western Union, WorldRemit, or Wise) directly to the seller's verified bank account. Never send cash via informal channels. NyumbaCheck holds funds as an intermediary until the transaction is confirmed, protecting you throughout." },
+      { q: "What taxes apply when buying property in Tanzania?", a: "Key taxes include: Stamp Duty (4% of property value for citizens, 6% for non-citizens), Capital Gains Tax (3% of value for listed assets), and Value Added Tax if applicable on commercial property. Your advocate or notary will guide you through these. NyumbaCheck can recommend qualified Tanzanian property advocates." },
+      { q: "Can NyumbaCheck act as my representative for the purchase?", a: "NyumbaCheck handles property verification, due diligence, and payment intermediary services on your behalf. For the legal transfer of title and signing of sale agreements, you will need a licensed Tanzanian advocate. NyumbaCheck can refer you to trusted, vetted advocates in Dar es Salaam and Zanzibar." },
+      { q: "What happens if I discover the title deed was fraudulent after I buy?", a: "This is why verification before purchase is critical. If a fraudulent title deed passes through the Land Registry and you suffer loss, you may have grounds for legal action under the Land Act (1999). NyumbaCheck's pre-purchase verification significantly reduces this risk by cross-checking at the Registry before any money moves." }
+    ],
     content: `<h4 class="font-bold text-stone-900 mb-3">The Challenge of Investing Remotely</h4>
-    <p class="mb-4">Tanzanians living in the UK, USA, UAE, and Canada collectively send billions of dollars home in remittances each year. A significant portion of that capital is intended for property investment — building a family home, buying a rental apartment, or securing land. But investing in Tanzanian property from abroad without a trusted local partner is genuinely dangerous.</p>
-    <p class="mb-4">Ghost sellers, fraudulent title deeds, and unregistered land are all real risks. Without someone on the ground to verify documents and physically inspect the property, you can wire money and receive nothing in return — with no legal recourse.</p>
-    <h4 class="font-bold text-stone-900 mb-3">What the Law Says About Land Ownership</h4>
-    <p class="mb-4">Under Tanzania's Land Act (1999), non-citizens cannot own land outright — land is vested in the President on behalf of all Tanzanians. However, Tanzanian citizens living abroad retain full rights to purchase and own property under a Residential License or Right of Occupancy. If you hold a Tanzanian passport or citizenship, you are fully entitled to buy property in Tanzania regardless of where you live.</p>
-    <h4 class="font-bold text-stone-900 mb-3">The Documents You Must Verify</h4>
-    <p class="mb-4">Before any money moves, these documents must be verified: (1) Certificate of Title or Right of Occupancy from the Ministry of Lands, (2) Plot Number cross-referenced with the Land Registry, (3) Seller's national ID or passport matching the title deed name, (4) Proof of no outstanding disputes at the Ward Tribunal level.</p>
-    <h4 class="font-bold text-stone-900 mb-3">How NyumbaCheck Protects Diaspora Buyers</h4>
-    <p class="mb-4">NyumbaCheck's ground team physically visits every listed property, inspects all title documents, cross-checks them with the Land Registry, and provides a verification report before a property goes live on our platform. You browse from London or Dubai knowing that a human being has stood in that apartment and confirmed it is real.</p>
-    <p class="mb-4">When you are ready to book or buy, NyumbaCheck manages the entire payment process — you pay through a secure link, we handle all communication with the host, and your funds are protected throughout the process.</p>
-    <p class="font-bold text-brandRed">Contact NyumbaCheck today via WhatsApp to discuss your property investment goals. We speak English and Swahili.</p>`
+    <p class="mb-4">Tanzanians in the UK, USA, UAE, and Canada collectively send billions of dollars home each year. A significant portion targets property investment. But investing from abroad without a trusted local partner is genuinely dangerous. Ghost sellers, fraudulent title deeds, and unregistered land are all real risks — and without someone on the ground, you may wire money and receive nothing in return.</p>
+    <h4 class="font-bold text-stone-900 mb-3">What Tanzanian Law Says About Ownership</h4>
+    <p class="mb-4">Under Tanzania's Land Act (1999), all land is vested in the President on behalf of all Tanzanians. Citizens — including diaspora — hold property through a Right of Occupancy or residential lease. If you hold a Tanzanian passport, you are fully entitled to buy property regardless of where you currently live.</p>
+    <h4 class="font-bold text-stone-900 mb-3">The Documents You Must Verify Before Paying</h4>
+    <p class="mb-4">(1) Certificate of Title or Right of Occupancy from the Ministry of Lands. (2) Plot Number cross-referenced with the Land Registry. (3) Seller's national ID or passport matching the title deed name exactly. (4) Proof of no outstanding Ward Tribunal disputes on the plot. All four must check out before a single shilling moves.</p>
+    <h4 class="font-bold text-stone-900 mb-3">How NyumbaCheck Protects You</h4>
+    <p class="mb-6">Our ground team physically visits every listed property, checks all title documents at the Land Registry, and provides a full verification report. You browse from London or Dubai knowing a real person has stood in that apartment and confirmed everything is legitimate. We handle payments as an intermediary, protecting your capital throughout.</p>`
   }
 ];
 
+function faqHTML(faqs) {
+  return `<div class="mt-6 border-t border-stone-200 pt-6">
+    <h4 class="font-bold text-stone-900 mb-4 flex items-center gap-2">
+      <svg class="w-5 h-5 text-brandGreen" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Frequently Asked Questions
+    </h4>
+    <div class="space-y-2">
+      ${faqs.map((f, i) => `
+      <div class="border border-stone-200 rounded-xl overflow-hidden">
+        <button onclick="toggleFaq(${i}, this)" class="w-full text-left px-4 py-3 text-sm font-bold text-stone-800 flex justify-between items-center hover:bg-stone-50 transition">
+          ${f.q}
+          <svg class="w-4 h-4 text-stone-400 flex-shrink-0 ml-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-answer hidden px-4 pb-4 text-xs text-stone-600 leading-relaxed bg-stone-50">${f.a}</div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function toggleFaq(i, btn) {
+  const answer = btn.nextElementSibling;
+  const arrow  = btn.querySelector('svg');
+  const isOpen = !answer.classList.contains('hidden');
+  answer.classList.toggle('hidden', isOpen);
+  arrow.style.transform = isOpen ? '' : 'rotate(180deg)';
+}
+
 function openArticle(i) {
-  document.getElementById('article-modal-title').innerText = articles[i].title;
-  document.getElementById('article-modal-content').innerHTML = articles[i].content;
+  const a = articles[i];
+  document.getElementById('article-modal-title').innerText = a.title;
+  document.getElementById('article-modal-content').innerHTML = a.content + faqHTML(a.faqs);
   openModal('articleModal');
 }
 
@@ -943,51 +1187,6 @@ function quickChat(msg) {
   document.getElementById('chatInput').value = msg;
   sendChat();
 }
-  <!-- ======================== FORM SUBMISSION SCRIPT ======================== -->
-  <script>
-// This script stops the default submit and sends data to your integrated backend
-document.getElementById('listingForm').addEventListener('submit', async (e) => {
-  e.preventDefault(); // 🛑 THIS STOPS OUTLOOK OR PAGE RELOADS
-
-  // Change the button text so the user knows it's working
-  const submitBtn = e.target.querySelector('button[type="submit"]');
-  const originalText = submitBtn.innerText;
-  submitBtn.innerText = "Submitting...";
-
-  // Gather data using your exact input IDs
-  const formData = {
-    name: document.getElementById('ls-name').value,
-    email: document.getElementById('ls-email').value,
-    city: document.getElementById('ls-city').value,
-    neighborhood: document.getElementById('ls-neighborhood').value,
-    type: document.getElementById('ls-type').value,
-    beds: document.getElementById('ls-beds').value,
-    price: document.getElementById('ls-price').value,
-    description: document.getElementById('ls-description').value,
-    photos: document.getElementById('ls-photos').value,
-    hasDeed: document.getElementById('ls-deed').checked // Captures the checkbox
-  };
-
-  // Send it to your Cloudflare Database
-  try {
-    const response = await fetch('/api/properties', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    });
-    
-    if(response.ok) {
-      alert("Success! Property sent to Admin Dashboard for verification.");
-      e.target.reset(); // Clears the form
-    } else {
-      alert("Error saving property. Please try again.");
-    }
-  } catch (err) {
-    alert("Connection failed. Check your network.");
-  } finally {
-    submitBtn.innerText = originalText; // Reset button text
-  }
-});
 
 </script>
 </body>
