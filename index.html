@@ -53,8 +53,9 @@
     email:      'nyumbachecktz@yahoo.com',
     instagram:  '@nyumbacheck1',
     commission:  0.10,
-    selcomLink: 'https://YOUR-SELCOM-PAY-BY-LINK-HERE',   // ← paste your Selcom Pay by Link URL here when ready
-    workerUrl:  'https://nyumbacheck-api.jilliandeo040.workers.dev'
+    selcomLink: 'https://YOUR-SELCOM-PAY-BY-LINK-HERE',
+    workerUrl:  'https://nyumbacheck-api.jilliandeo040.workers.dev',
+    imgbbKey:   'YOUR_IMGBB_API_KEY'  // ← get free key at api.imgbb.com then paste here
   };
 </script>
 
@@ -340,19 +341,44 @@
       </div>
       <div class="grid md:grid-cols-2 gap-4">
         <div>
-          <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-1">City *</label>
-          <select id="ls-city" required class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandGreen outline-none">
-            <option value="">Select city</option>
-            <option>Dar es Salaam</option>
-            <option>Zanzibar</option>
+          <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-1">Region / City *</label>
+          <select id="ls-city" required onchange="updateFormNeighborhood()" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandGreen outline-none">
+            <option value="">Select region</option>
+            <optgroup label="Dar es Salaam"><option>Dar es Salaam</option></optgroup>
+            <optgroup label="Zanzibar">
+              <option value="Zanzibar">Zanzibar (Unguja)</option>
+              <option value="Zanzibar">Zanzibar (Pemba)</option>
+            </optgroup>
+            <optgroup label="Northern Tanzania">
+              <option>Arusha</option><option>Kilimanjaro</option><option>Manyara</option><option>Tanga</option>
+            </optgroup>
+            <optgroup label="Central Tanzania">
+              <option>Dodoma</option><option>Singida</option><option>Tabora</option>
+            </optgroup>
+            <optgroup label="Lake Zone">
+              <option>Mwanza</option><option>Kagera</option><option>Geita</option>
+              <option>Simiyu</option><option>Shinyanga</option><option>Mara</option><option>Kigoma</option>
+            </optgroup>
+            <optgroup label="Eastern Tanzania">
+              <option>Morogoro</option><option>Pwani (Coast)</option>
+            </optgroup>
+            <optgroup label="Southern Highlands">
+              <option>Iringa</option><option>Mbeya</option><option>Njombe</option>
+              <option>Songwe</option><option>Rukwa</option><option>Katavi</option><option>Ruvuma</option>
+            </optgroup>
+            <optgroup label="Southern Tanzania">
+              <option>Lindi</option><option>Mtwara</option>
+            </optgroup>
           </select>
         </div>
         <div>
-          <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-1">Neighborhood *</label>
-          <input type="text" id="ls-neighborhood" required class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandGreen outline-none" placeholder="e.g. Masaki, Stone Town">
+          <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-1">Neighborhood / Area *</label>
+          <select id="ls-neighborhood" required class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandGreen outline-none">
+            <option value="">Select region first</option>
+          </select>
         </div>
       </div>
-      <div class="grid md:grid-cols-3 gap-4">
+      <div class="grid md:grid-cols-4 gap-4">
         <div>
           <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-1">Listing Type *</label>
           <select id="ls-type" required class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandGreen outline-none">
@@ -371,25 +397,38 @@
           <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-1">Price (TZS)</label>
           <input type="text" id="ls-price" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandGreen outline-none" placeholder="e.g. 1,500,000">
         </div>
+        <div>
+          <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-1">Price (USD)</label>
+          <input type="text" id="ls-price-usd" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandGreen outline-none" placeholder="Optional">
+        </div>
       </div>
       <div>
         <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-1">Property Description *</label>
         <textarea id="ls-description" required rows="3" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandGreen outline-none resize-none" placeholder="Describe your property: size, amenities, security features, water/power supply..."></textarea>
       </div>
       <div>
-        <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-1">Property Photos (up to 10 images)</label>
-        <div class="border-2 border-dashed border-stone-300 rounded-xl p-6 text-center hover:border-brandGreen transition cursor-pointer bg-white" onclick="document.getElementById('ls-photos-file').click()">
-          <svg class="w-8 h-8 text-stone-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-          <p class="text-sm text-stone-500 font-medium">Click to select photos</p>
-          <p class="text-[10px] text-stone-400 mt-1">JPG, PNG or WEBP — max 5MB each</p>
+        <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-2">Property Photos</label>
+        <div class="border-2 border-dashed border-stone-300 rounded-xl p-5 text-center hover:border-brandGreen transition cursor-pointer bg-white" onclick="document.getElementById('ls-photos-file').click()">
+          <svg class="w-7 h-7 text-stone-300 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <p class="text-sm text-stone-500 font-medium">Click to upload photos (up to 10)</p>
+          <p class="text-[10px] text-stone-400 mt-0.5">JPG, PNG or WEBP — max 5MB each</p>
         </div>
         <input type="file" id="ls-photos-file" multiple accept="image/*" class="hidden" onchange="previewPhotos(this)">
         <div id="photo-preview" class="flex flex-wrap gap-2 mt-3 hidden"></div>
         <p id="photo-count" class="text-[10px] text-brandGreen font-bold mt-1 hidden"></p>
+        <div class="mt-3">
+          <p class="text-[10px] text-stone-400 mb-1 font-bold uppercase tracking-widest">OR — paste image / Google Drive links (one per line)</p>
+          <textarea id="ls-photo-links" rows="2" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-2.5 text-xs focus:ring-2 focus:ring-brandGreen outline-none resize-none" placeholder="https://drive.google.com/...&#10;https://..."></textarea>
+          <p class="text-[10px] text-stone-400 mt-0.5">Google Drive: open file → Share → "Anyone with link" → Copy link</p>
+        </div>
+      </div>
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+        <p class="text-[10px] font-bold text-amber-700 uppercase tracking-widest mb-1">📜 Title Deed — Required for Verification</p>
+        <p class="text-xs text-amber-800 leading-relaxed">After submitting this form, please <strong>email a scan or clear photo of your title deed</strong> to <strong>nyumbachecktz@yahoo.com</strong> with the subject: <em>"Title Deed — [Your Name] — [Neighborhood]"</em>. Your listing cannot be approved without it.</p>
       </div>
       <div class="flex items-start gap-3 p-4 bg-brandGreen/10 rounded-xl border border-brandGreen/30">
         <input type="checkbox" id="ls-deed" class="mt-0.5 accent-brandGreen">
-        <label for="ls-deed" class="text-xs text-stone-700 font-medium">I have a valid Title Deed for this property and consent to NyumbaCheck cross-referencing it with the Tanzania Land Registry as part of the verification process.</label>
+        <label for="ls-deed" class="text-xs text-stone-700 font-medium">I confirm I have a valid Title Deed and will email it to NyumbaCheck for verification.</label>
       </div>
       <button type="submit" class="w-full bg-brandRed text-white font-bold py-4 rounded-xl hover:bg-stone-900 transition shadow-md uppercase tracking-widest text-sm">Submit for Verification</button>
       <p class="text-[10px] text-stone-400 text-center">Our team will contact you within 24 hours to schedule your property audit. First verification is free.</p>
@@ -520,6 +559,25 @@
   </div>
 </div>
 
+<!-- Photo Slideshow Modal -->
+<div id="slideshowModal" class="fixed inset-0 z-[200] hidden flex items-center justify-center bg-black/95" onclick="closeSlideshow()">
+  <button onclick="prevSlide(event)" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/30 text-white rounded-full w-12 h-12 flex items-center justify-center z-10 transition">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+  </button>
+  <button onclick="nextSlide(event)" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/30 text-white rounded-full w-12 h-12 flex items-center justify-center z-10 transition">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+  </button>
+  <button onclick="closeSlideshow()" class="absolute top-4 right-5 text-white/70 hover:text-white text-4xl leading-none font-light z-10">&times;</button>
+  <div class="flex flex-col items-center px-16 w-full max-w-4xl" onclick="event.stopPropagation()">
+    <img id="slideshow-img" src="" class="max-h-[75vh] max-w-full rounded-xl object-contain shadow-2xl" alt="Property photo">
+    <div class="flex items-center gap-3 mt-4">
+      <span id="slide-counter" class="text-white/60 text-sm font-bold"></span>
+    </div>
+    <div id="slide-dots" class="flex gap-2 mt-2"></div>
+    <div id="slide-thumbs" class="flex gap-2 mt-3 overflow-x-auto scroll-hide pb-2"></div>
+  </div>
+</div>
+
 <!-- Notice Modal -->
 <div id="noticeModal" class="fixed inset-0 z-[160] hidden flex items-center justify-center px-4">
   <div class="absolute inset-0 bg-stone-900/60 backdrop-blur-sm" onclick="closeModal('noticeModal')"></div>
@@ -545,94 +603,51 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('footer-email').href = 'mailto:' + CONFIG.email;
 });
 
-// ── Property Data ──────────────────────────────────────────────
-// To add a real property: duplicate a block, update all fields.
-// For image: upload to Google Photos / Cloudinary and paste the URL.
-// bookedDates: array of "YYYY-MM-DD" strings that are already taken.
-const properties = [
-  // ── DAR ES SALAAM ──
-  {
-    id:"1", city:"Dar es Salaam", neighborhood:"Masaki",
-    title:"Executive Modern Penthouse", type:"Rent", price:1450000,
-    beds:3, baths:2, deed:true,
-    description:"Fully furnished, 24hr security, backup generator, rooftop terrace with panoramic city views.",
-    image:"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=80",
-    bookedDates:["2026-07-03","2026-07-04","2026-07-05","2026-07-10","2026-07-11"]
-  },
-  {
-    id:"2", city:"Dar es Salaam", neighborhood:"Oyster Bay",
-    title:"Oceanfront Serviced Villa", type:"Rent", price:3000000,
-    beds:4, baths:4, deed:true,
-    description:"Direct Indian Ocean view, private pool, staff quarters, standby generator, title deed verified.",
-    image:"https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80",
-    bookedDates:["2026-07-01","2026-07-02","2026-07-15","2026-07-16","2026-07-17"]
-  },
-  {
-    id:"3", city:"Dar es Salaam", neighborhood:"Kigamboni",
-    title:"Secure Expat Apartment", type:"Rent", price:800000,
-    beds:2, baths:1, deed:true,
-    description:"Gated compound, allocated parking, reliable water supply, 15 minutes from the ferry terminal.",
-    image:"https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80",
-    bookedDates:[]
-  },
-  {
-    id:"4", city:"Dar es Salaam", neighborhood:"Msasani",
-    title:"Luxury Condo — Turn-Key", type:"Rent", price:1800000,
-    beds:2, baths:2, deed:true,
-    description:"Fully fitted kitchen, high-speed fibre internet, unobstructed sea views, modern finishes throughout.",
-    image:"https://images.unsplash.com/photo-1515263487990-61b07816b324?auto=format&fit=crop&w=600&q=80",
-    bookedDates:["2026-07-08","2026-07-09"]
-  },
-  {
-    id:"5", city:"Dar es Salaam", neighborhood:"Mbezi Beach",
-    title:"Gated Community Townhouse", type:"Rent", price:1200000,
-    beds:3, baths:2, deed:true,
-    description:"New build in a secure estate, community pool, children's play area, 24-hour controlled access.",
-    image:"https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=600&q=80",
-    bookedDates:[]
-  },
-  {
-    id:"6", city:"Dar es Salaam", neighborhood:"Masaki",
-    title:"Diplomatic Quarter Residence", type:"Sale", price:285000000,
-    beds:3, baths:3, deed:true,
-    description:"Prime location near embassies, CCTV throughout, smart home features, private walled garden.",
-    image:"https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=600&q=80",
-    bookedDates:[]
-  },
-  // ── ZANZIBAR ──
-  {
-    id:"7", city:"Zanzibar", neighborhood:"Stone Town",
-    title:"Stone Town Heritage Apartment", type:"Rent", price:1100000,
-    beds:2, baths:1, deed:true,
-    description:"UNESCO-listed Stone Town. Original carved Zanzibari doors, courtyard, walking distance to Forodhani Gardens and ferry.",
-    image:"https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=600&q=80",
-    bookedDates:["2026-07-06","2026-07-07","2026-07-20","2026-07-21","2026-07-22"]
-  },
-  {
-    id:"8", city:"Zanzibar", neighborhood:"Nungwi",
-    title:"Nungwi Beachfront Villa", type:"Rent", price:4500000,
-    beds:3, baths:3, deed:true,
-    description:"Direct beach access, private plunge pool, staff quarters, stunning sunset views over the Indian Ocean.",
-    image:"https://images.unsplash.com/photo-1602002418082-a4443e081dd1?auto=format&fit=crop&w=600&q=80",
-    bookedDates:["2026-07-12","2026-07-13","2026-07-14","2026-07-25","2026-07-26"]
-  },
-  {
-    id:"9", city:"Zanzibar", neighborhood:"Paje",
-    title:"Paje Beach House", type:"Rent", price:2800000,
-    beds:2, baths:2, deed:true,
-    description:"Prime kite-surfing spot, fully equipped kitchen, open-plan living, lush tropical garden, 2 min walk to the beach.",
-    image:"https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=600&q=80",
-    bookedDates:["2026-07-18","2026-07-19"]
-  },
-  {
-    id:"10", city:"Zanzibar", neighborhood:"Kendwa",
-    title:"Kendwa Sunset Cottage", type:"Sale", price:180000000,
-    beds:2, baths:1, deed:true,
-    description:"Rare freehold Zanzibar cottage just 50m from white sand beach. Ideal for diaspora investors or holiday let.",
-    image:"https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=600&q=80",
-    bookedDates:[]
+// ── Properties — loaded live from Worker/KV ────────────────────
+let properties = [];   // filled by loadProperties() on page load
+let slideshowPhotos = [];
+let slideIndex = 0;
+
+// Normalise a KV listing to the shape render() expects
+function normalise(p) {
+  const photos = p.photos && p.photos.length ? p.photos : (p.image ? [p.image] : []);
+  return {
+    id:           p.id,
+    city:         p.city || 'Tanzania',
+    neighborhood: p.neighborhood || '',
+    title:        p.title || p.description?.split('.')[0]?.substring(0,60) || 'Property',
+    type:         p.type === 'For Rent' ? 'Rent' : p.type === 'For Sale' ? 'Sale' : (p.type || 'Rent'),
+    price:        Number(String(p.priceTZS || p.price || 0).replace(/[^0-9]/g,'')),
+    priceUSD:     p.priceUSD || '',
+    beds:         p.beds  || '—',
+    baths:        p.baths || '—',
+    deed:         p.hasDeed || p.deed || false,
+    description:  p.description || '',
+    photos,
+    image:        photos[0] || '',
+    bookedDates:  p.bookedDates || [],
+  };
+}
+
+async function loadProperties() {
+  const grid = document.getElementById('property-grid');
+  grid.innerHTML = `<div class="col-span-full py-20 text-center">
+    <div class="animate-spin w-10 h-10 border-4 border-brandRed border-t-transparent rounded-full mx-auto mb-4"></div>
+    <p class="text-stone-400 text-sm">Loading verified properties...</p>
+  </div>`;
+  try {
+    const res  = await fetch(`${CONFIG.workerUrl}/api/properties`);
+    const data = await res.json();
+    properties = (data.properties || []).map(normalise);
+    render(properties);
+  } catch (err) {
+    grid.innerHTML = `<div class="col-span-full py-16 text-center text-stone-400">
+      <p class="text-2xl mb-2">📭</p>
+      <p class="font-serif text-lg">No verified listings yet</p>
+      <p class="text-sm mt-1">Check back soon — our team is verifying properties now.</p>
+    </div>`;
   }
-];
+}
 
 // ── Helpers ────────────────────────────────────────────────────
 const fmt = n => new Intl.NumberFormat('en-TZ').format(n);
@@ -648,6 +663,40 @@ function showNotice(title, msg) {
   openModal('noticeModal');
 }
 
+// ── Slideshow ──────────────────────────────────────────────────
+function openSlideshow(photos, start) {
+  slideshowPhotos = photos;
+  slideIndex      = start || 0;
+  document.getElementById('slideshowModal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  updateSlide();
+}
+function closeSlideshow() {
+  document.getElementById('slideshowModal').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+function prevSlide(e) { e.stopPropagation(); slideIndex = (slideIndex - 1 + slideshowPhotos.length) % slideshowPhotos.length; updateSlide(); }
+function nextSlide(e) { e.stopPropagation(); slideIndex = (slideIndex + 1) % slideshowPhotos.length; updateSlide(); }
+function updateSlide() {
+  document.getElementById('slideshow-img').src   = slideshowPhotos[slideIndex];
+  document.getElementById('slide-counter').innerText = `${slideIndex + 1} / ${slideshowPhotos.length}`;
+  // Dots
+  document.getElementById('slide-dots').innerHTML = slideshowPhotos.map((_, i) =>
+    `<div onclick="event.stopPropagation();slideIndex=${i};updateSlide()" class="w-2 h-2 rounded-full cursor-pointer transition ${i === slideIndex ? 'bg-white' : 'bg-white/30'}"></div>`
+  ).join('');
+  // Thumbnails
+  document.getElementById('slide-thumbs').innerHTML = slideshowPhotos.map((url, i) =>
+    `<img src="${url}" onclick="event.stopPropagation();slideIndex=${i};updateSlide()" class="h-14 w-20 object-cover rounded-lg cursor-pointer transition ${i === slideIndex ? 'ring-2 ring-white' : 'opacity-50 hover:opacity-80'}">`
+  ).join('');
+}
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('slideshowModal').classList.contains('hidden')) {
+    if (e.key === 'ArrowLeft')  { slideIndex = (slideIndex - 1 + slideshowPhotos.length) % slideshowPhotos.length; updateSlide(); }
+    if (e.key === 'ArrowRight') { slideIndex = (slideIndex + 1) % slideshowPhotos.length; updateSlide(); }
+    if (e.key === 'Escape') closeSlideshow();
+  }
+});
+
 // ── Property Cards ──────────────────────────────────────────────
 function render(list) {
   const grid = document.getElementById('property-grid');
@@ -655,29 +704,44 @@ function render(list) {
     grid.innerHTML = `<div class="col-span-full py-16 text-center text-stone-400 font-serif text-xl">No verified properties found for this search.</div>`;
     return;
   }
-  grid.innerHTML = list.map(p => `
+  grid.innerHTML = list.map(p => {
+    const photoCount = p.photos ? p.photos.length : 0;
+    const mainImg    = p.image || (p.photos && p.photos[0]) || '';
+    const cityLabel  = p.city === 'Zanzibar' || p.city?.includes('Zanzibar') ? '🏝️ ZNZ' : p.city === 'Dar es Salaam' ? '🏙️ DSM' : `📍 ${p.city?.substring(0,3)?.toUpperCase()}`;
+    const photosJSON = JSON.stringify(p.photos || [mainImg]).replace(/"/g, '&quot;');
+    return `
     <div class="bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group">
-      <div class="relative overflow-hidden">
-        <img src="${p.image}" class="w-full h-60 object-cover group-hover:scale-105 transition duration-500" alt="${p.title}" loading="lazy">
+      <div class="relative overflow-hidden cursor-pointer" onclick="openSlideshow(${photosJSON ? photosJSON : '[]'}, 0)">
+        <img src="${mainImg}" class="w-full h-60 object-cover group-hover:scale-105 transition duration-500" alt="${p.title}" loading="lazy"
+          onerror="this.src='https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?w=600&q=60'">
         <div class="absolute top-4 left-4 bg-brandGreen text-white px-3 py-1.5 rounded-full text-[10px] font-bold tracking-widest flex items-center gap-1">
           <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
           VERIFIED
         </div>
         <div class="absolute top-4 right-4 flex gap-1">
-          ${p.deed ? `<span class="bg-amber-400 text-stone-900 px-2 py-1 rounded-full text-[9px] font-bold tracking-wide">📜 DEED</span>` : ''}
-          <span class="bg-white/90 text-brandRed px-2 py-1 rounded-full text-[9px] font-bold">${p.city === 'Zanzibar' ? '🏝️ ZNZ' : '🏙️ DSM'}</span>
+          ${p.deed ? `<span class="bg-amber-400 text-stone-900 px-2 py-1 rounded-full text-[9px] font-bold">📜 DEED</span>` : ''}
+          <span class="bg-white/90 text-brandRed px-2 py-1 rounded-full text-[9px] font-bold">${cityLabel}</span>
+        </div>
+        ${photoCount > 1 ? `
+        <div class="absolute bottom-3 right-3 bg-black/60 text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          ${photoCount} photos
+        </div>` : ''}
+        <div class="absolute inset-0 bg-black/0 hover:bg-black/10 transition flex items-center justify-center">
+          ${photoCount > 0 ? `<span class="opacity-0 group-hover:opacity-100 transition bg-black/50 text-white text-xs font-bold px-4 py-2 rounded-full">View Photos</span>` : ''}
         </div>
       </div>
       <div class="p-5 flex flex-col flex-grow">
         <div class="text-xl font-serif text-brandRed font-bold mb-0.5">
           ${fmt(p.price)} <span class="text-[10px] text-stone-400 font-sans font-normal uppercase tracking-widest">TZS ${p.type === 'Rent' ? '/ mo' : 'asking'}</span>
+          ${p.priceUSD ? `<span class="block text-sm text-brandGreen font-bold font-sans">≈ $${Number(String(p.priceUSD).replace(/[^0-9]/g,'')).toLocaleString()} USD</span>` : ''}
         </div>
         <h3 class="font-bold text-stone-900 leading-tight mt-2 mb-1">${p.title}</h3>
-        <p class="text-[11px] text-stone-400 mb-2 flex items-center gap-1.5">
+        <p class="text-[11px] text-stone-400 mb-2 flex items-center gap-1.5 flex-wrap">
           <span>📍 ${p.neighborhood}, ${p.city}</span> <span>•</span>
           <span>🛏 ${p.beds}</span> <span>•</span> <span>🛁 ${p.baths}</span>
         </p>
-        <p class="text-[11px] text-stone-500 leading-relaxed mb-5">${p.description}</p>
+        <p class="text-[11px] text-stone-500 leading-relaxed mb-5 line-clamp-3">${p.description}</p>
         <div class="mt-auto space-y-2.5">
           <button onclick="openContact('${p.id}')"
             class="w-full bg-brandRed text-white text-[11px] font-bold py-3.5 rounded-xl uppercase tracking-widest hover:bg-stone-900 transition flex justify-center items-center gap-2">
@@ -691,8 +755,8 @@ function render(list) {
           </button>
         </div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 // ── All Tanzania & Zanzibar Locations ─────────────────────────
@@ -746,9 +810,8 @@ document.getElementById('searchBtn').addEventListener('click', () => {
   const type = document.getElementById('filterType').value;
   const loc  = document.getElementById('filterLocation').value;
   let f = properties;
-  // For Zanzibar sub-regions, match on city field "Zanzibar"
   if (city === 'Zanzibar Unguja' || city === 'Zanzibar Pemba') {
-    f = f.filter(p => p.city === 'Zanzibar');
+    f = f.filter(p => p.city === 'Zanzibar' || p.city?.includes('Zanzibar'));
   } else if (city !== 'All') {
     f = f.filter(p => p.city === city);
   }
@@ -756,7 +819,9 @@ document.getElementById('searchBtn').addEventListener('click', () => {
   if (loc  !== 'All') f = f.filter(p => p.neighborhood === loc);
   render(f);
 });
-render(properties);
+
+// Load real properties from KV on page load
+loadProperties();
 
 // ── Contact Host ───────────────────────────────────────────────
 function openContact(id) {
@@ -922,7 +987,50 @@ function submitBooking() {
   }
 }
 
-// ── Seller Listing Form — sends to Cloudflare Worker → KV ───────
+// ── Dynamic neighborhood for listing form ──────────────────────
+function updateFormNeighborhood() {
+  const city   = document.getElementById('ls-city').value;
+  const select = document.getElementById('ls-neighborhood');
+  const locs   = regionLocations[city === 'Zanzibar' ? 'Zanzibar Unguja' : city] || [];
+  select.innerHTML = locs.length
+    ? locs.map(l => `<option value="${l}">${l}</option>`).join('')
+    : '<option value="">Enter manually below</option>';
+  // If no predefined locations, swap to text input
+  if (!locs.length) {
+    select.style.display = 'none';
+    let inp = document.getElementById('ls-neighborhood-text');
+    if (!inp) {
+      inp = document.createElement('input');
+      inp.type = 'text'; inp.id = 'ls-neighborhood-text';
+      inp.className = 'w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandGreen outline-none';
+      inp.placeholder = 'Type your neighborhood / area';
+      select.parentNode.appendChild(inp);
+    }
+    inp.style.display = '';
+  } else {
+    select.style.display = '';
+    const inp = document.getElementById('ls-neighborhood-text');
+    if (inp) inp.style.display = 'none';
+  }
+}
+
+// ── Direct ImgBB upload from browser ──────────────────────────
+async function uploadToImgBB(file) {
+  if (!CONFIG.imgbbKey || CONFIG.imgbbKey === 'YOUR_IMGBB_API_KEY') {
+    console.warn('ImgBB key not set — skipping upload');
+    return null;
+  }
+  const fd = new FormData();
+  fd.append('key', CONFIG.imgbbKey);
+  fd.append('image', file);
+  try {
+    const res  = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
+    const data = await res.json();
+    return data.success ? data.data.display_url : null;
+  } catch { return null; }
+}
+
+// ── Seller Listing Form ────────────────────────────────────────
 function previewPhotos(input) {
   const preview = document.getElementById('photo-preview');
   const count   = document.getElementById('photo-count');
@@ -931,7 +1039,7 @@ function previewPhotos(input) {
   preview.classList.remove('hidden');
   count.classList.remove('hidden');
   count.innerText = `${input.files.length} photo${input.files.length > 1 ? 's' : ''} selected`;
-  Array.from(input.files).slice(0, 10).forEach(file => {
+  Array.from(input.files).slice(0,10).forEach(file => {
     const reader = new FileReader();
     reader.onload = e => {
       const img = document.createElement('img');
@@ -946,31 +1054,36 @@ function previewPhotos(input) {
 document.getElementById('listingForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   const btn = this.querySelector('button[type="submit"]');
-  const originalText = btn.innerHTML;
-
-  btn.innerHTML = `<span class="animate-pulse">⏳ Uploading photos...</span>`;
+  const orig = btn.innerHTML;
   btn.disabled = true;
 
   try {
-    // Upload photos to Worker → ImgBB
+    // 1 — Upload files directly to ImgBB from the browser
     const fileInput = document.getElementById('ls-photos-file');
     const photoUrls = [];
-
     if (fileInput && fileInput.files.length > 0) {
-      for (const file of Array.from(fileInput.files).slice(0, 10)) {
-        const fd = new FormData();
-        fd.append('image', file);
-        try {
-          const res  = await fetch(`${CONFIG.workerUrl}/upload-photo`, { method: 'POST', body: fd });
-          const data = await res.json();
-          if (data.url) photoUrls.push(data.url);
-        } catch (err) { console.warn('Photo upload failed:', err); }
+      btn.innerHTML = `<span class="animate-pulse">⏳ Uploading ${fileInput.files.length} photo(s)...</span>`;
+      for (const file of Array.from(fileInput.files).slice(0,10)) {
+        const url = await uploadToImgBB(file);
+        if (url) photoUrls.push(url);
       }
+    }
+    // 2 — Also collect any pasted links
+    const linkBox = document.getElementById('ls-photo-links');
+    if (linkBox && linkBox.value.trim()) {
+      linkBox.value.split('\n').map(l => l.trim()).filter(Boolean).forEach(l => photoUrls.push(l));
     }
 
     btn.innerHTML = `<span class="animate-pulse">⏳ Submitting listing...</span>`;
 
-    // Submit listing to Worker → KV
+    // 3 — Get neighborhood (select or text input)
+    const hoodSelect = document.getElementById('ls-neighborhood');
+    const hoodText   = document.getElementById('ls-neighborhood-text');
+    const neighborhood = (hoodText && hoodText.style.display !== 'none')
+      ? hoodText.value.trim()
+      : hoodSelect.value;
+
+    // 4 — Post to Worker → KV
     const res = await fetch(`${CONFIG.workerUrl}/submit-listing`, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -978,11 +1091,11 @@ document.getElementById('listingForm').addEventListener('submit', async function
         name:         document.getElementById('ls-name').value.trim(),
         email:        document.getElementById('ls-email').value.trim(),
         city:         document.getElementById('ls-city').value,
-        neighborhood: document.getElementById('ls-neighborhood').value.trim(),
+        neighborhood,
         type:         document.getElementById('ls-type').value,
         beds:         document.getElementById('ls-beds').value,
         priceTZS:     document.getElementById('ls-price').value.trim(),
-        priceUSD:     document.getElementById('ls-price-usd') ? document.getElementById('ls-price-usd').value.trim() : '',
+        priceUSD:     document.getElementById('ls-price-usd').value.trim(),
         description:  document.getElementById('ls-description').value.trim(),
         photos:       photoUrls,
         hasDeed:      document.getElementById('ls-deed').checked,
@@ -990,26 +1103,24 @@ document.getElementById('listingForm').addEventListener('submit', async function
     });
 
     const result = await res.json();
-
     if (result.success) {
-      showNotice(
-        'Submission Received ✓',
-        'Thank you! Your property has been submitted for verification. Our team will contact you within 24 hours.'
-      );
+      // Show success with title deed reminder
+      document.getElementById('notice-title').innerText   = 'Submitted! ✓';
+      document.getElementById('notice-message').innerText =
+        'Your property has been submitted for review. Our team will contact you within 24 hours.\n\n' +
+        '📜 IMPORTANT: Please email your title deed scan to nyumbachecktz@yahoo.com with subject ' +
+        '"Title Deed — ' + neighborhood + '" to complete your verification.';
+      openModal('noticeModal');
       this.reset();
-      if (document.getElementById('photo-preview')) {
-        document.getElementById('photo-preview').classList.add('hidden');
-        document.getElementById('photo-count').classList.add('hidden');
-      }
+      document.getElementById('photo-preview').classList.add('hidden');
+      document.getElementById('photo-count').classList.add('hidden');
     } else {
-      showNotice('Error', result.error || 'Submission failed. Please try again or email us directly.');
+      showNotice('Error', result.error || 'Submission failed. Please email us directly at ' + CONFIG.email);
     }
-
   } catch (err) {
-    // If Worker unreachable, show error — no mailto popup
-    showNotice('Connection Error', 'Could not reach NyumbaCheck servers. Please email us at ' + CONFIG.email + ' with your property details.');
+    showNotice('Connection Error', 'Could not reach NyumbaCheck. Please email ' + CONFIG.email + ' with your property details.');
   } finally {
-    btn.innerHTML = originalText;
+    btn.innerHTML = orig;
     btn.disabled  = false;
   }
 });
