@@ -6,7 +6,7 @@ compatibility_date = "2026-06-24"
 main = "worker.js" 
 
 [vars]
-ADMIN_TOKEN = "Manchester40#23"
+ADMIN_TOKEN = "Manchester4023"
 
 [[kv_namespaces]]
 binding = "NYUMBA_DB"
