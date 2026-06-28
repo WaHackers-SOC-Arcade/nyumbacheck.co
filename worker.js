@@ -136,7 +136,8 @@ export default {
     // Protected — only you can access this with your ADMIN_TOKEN.
     // ══════════════════════════════════════════════════════════════
     if (url.pathname === '/admin/listings' && request.method === 'GET') {
-      const token = url.searchParams.get('token');
+      const rawToken = url.searchParams.get('token') || '';
+      const token = decodeURIComponent(rawToken);
       if (!env.ADMIN_TOKEN || token !== env.ADMIN_TOKEN) {
         return json({ error: 'Unauthorized' }, 401);
       }
@@ -165,7 +166,8 @@ export default {
     // Body: { "id": "listing_xxx", "status": "approved" }
     // ══════════════════════════════════════════════════════════════
     if (url.pathname === '/admin/update-listing' && request.method === 'PATCH') {
-      const token = url.searchParams.get('token');
+      const rawToken = url.searchParams.get('token') || '';
+      const token = decodeURIComponent(rawToken);
       if (!env.ADMIN_TOKEN || token !== env.ADMIN_TOKEN) {
         return json({ error: 'Unauthorized' }, 401);
       }
